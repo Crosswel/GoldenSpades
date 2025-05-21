@@ -37,13 +37,14 @@
             <h3 class="text-lg font-medium text-gray-900 mb-4">Dados de Perfil</h3>
             <form method="POST" action="{{ route('profile.update') }}">
                 @csrf
-                @method('PUT')
+                {{-- Método POST em vez de PUT, já que tua rota usa POST --}}
+                {{-- @method('PUT') --}}
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="address">
                         Morada
                     </label>
-                    <input type="text" name="address" value="{{ old('address', $user->profile->address ?? '') }}"
+                    <input type="text" name="address" value="{{ old('address', $user->address) }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" />
                 </div>
 
@@ -51,8 +52,16 @@
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
                         Telemóvel
                     </label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->profile->phone ?? '') }}"
+                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required />
                 </div>
 
                 <button type="submit"

@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        // Certifica-te de que estas relações existem no modelo User
+        // Relações devem estar definidas no modelo User
         $orders = $user->orders ?? collect();
         $favorites = $user->favorites ?? collect();
 
@@ -22,26 +22,21 @@ class UserController extends Controller
     }
 
     /**
-     * Atualiza os dados do perfil (morada e telemóvel).
+     * Atualiza os dados do perfil (morada, telemóvel, e email se desejado).
      */
     public function updateProfile(Request $request)
     {
         $request->validate([
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
         ]);
 
         $user = Auth::user();
-
-        // Garante que o utilizador tem um perfil
-        if (!$user->profile) {
-            $user->profile()->create();
-        }
-
-        $user->profile->update([
-            'address' => $request->input('address'),
-            'phone' => $request->input('phone'),
-        ]);
+        $user->address = $request->input('address');
+        $user->phone = $request->input('phone');
+        $user->email = $request->input('email');
+        $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Perfil atualizado com sucesso.');
     }

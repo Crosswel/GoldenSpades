@@ -8,6 +8,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Order;    // <- IMPORTADO
+use App\Models\Profile;  // <- IMPORTADO
+use App\Models\Produto;  // <- IMPORTADO
 
 class User extends Authenticatable
 {
@@ -17,11 +20,6 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -31,11 +29,6 @@ class User extends Authenticatable
         'usertype',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -43,20 +36,10 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
     protected $appends = [
         'profile_photo_url',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -65,27 +48,19 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Relação: um utilizador tem um perfil.
-     */
     public function profile()
     {
         return $this->hasOne(Profile::class);
     }
 
-    /**
-     * Relação: um utilizador pode ter várias encomendas.
-     */
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
-    /**
-     * Relação: favoritos (pivot com produtos).
-     */
     public function favorites()
-    {
-        return $this->belongsToMany(Product::class, 'favorites'); // ajusta o nome da tabela se for diferente
-    }
+{
+    return $this->belongsToMany(Produto::class, 'favorites'); // usa o nome do modelo real
+}
+        
 }
