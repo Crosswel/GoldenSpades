@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\UserController;
 
 /**
  * Página inicial
@@ -44,19 +46,18 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile');
-});
-
-Route::get('/admin', function () {
-    return view('admin.dashboard'); // ou o ficheiro Blade que preferires
-})->middleware(['auth'])->name('admin.dashboard');
-
-Route::middleware(['auth'])->group(function () {
+    // Painel do utilizador com favoritos, encomendas, etc.
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+
+    // Atualização de dados do perfil pelo próprio utilizador
+    Route::post('/dashboard/update', [UserController::class, 'updateProfile'])->name('dashboard.update');
+
+    // Página dedicada de perfil
+    Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile');
+    Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 });
+
+// Área de administração
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+})->middleware(['auth'])->name('admin.dashboard');
