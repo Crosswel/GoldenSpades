@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit88970a0117c062eed55fa8728fc43833
+class ComposerStaticInita15d1433edbd7065e4c198758b2efd13
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -2734,14 +2734,27 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Queue\\DatabaseQueue' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/DatabaseQueue.php',
         'Illuminate\\Queue\\Events\\JobAttempted' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobAttempted.php',
         'Illuminate\\Queue\\Events\\JobExceptionOccurred' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobExceptionOccurred.php',
+        'Illuminate\\Queue\\Events\\JobFailed' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobFailed.php',
+        'Illuminate\\Queue\\Events\\JobPopped' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobPopped.php',
+        'Illuminate\\Queue\\Events\\JobPopping' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobPopping.php',
+        'Illuminate\\Queue\\Events\\JobProcessed' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobProcessed.php',
+        'Illuminate\\Queue\\Events\\JobProcessing' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobProcessing.php',
         'Illuminate\\Queue\\Events\\JobQueued' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobQueued.php',
         'Illuminate\\Queue\\Events\\JobQueueing' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobQueueing.php',
+        'Illuminate\\Queue\\Events\\JobReleasedAfterException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobReleasedAfterException.php',
+        'Illuminate\\Queue\\Events\\JobRetryRequested' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobRetryRequested.php',
+        'Illuminate\\Queue\\Events\\JobTimedOut' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/JobTimedOut.php',
+        'Illuminate\\Queue\\Events\\Looping' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/Looping.php',
+        'Illuminate\\Queue\\Events\\QueueBusy' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/QueueBusy.php',
+        'Illuminate\\Queue\\Events\\WorkerStopping' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Events/WorkerStopping.php',
+        'Illuminate\\Queue\\Failed\\CountableFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/CountableFailedJobProvider.php',
         'Illuminate\\Queue\\Failed\\DatabaseFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/DatabaseFailedJobProvider.php',
         'Illuminate\\Queue\\Failed\\DatabaseUuidFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/DatabaseUuidFailedJobProvider.php',
         'Illuminate\\Queue\\Failed\\DynamoDbFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/DynamoDbFailedJobProvider.php',
         'Illuminate\\Queue\\Failed\\FailedJobProviderInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/FailedJobProviderInterface.php',
         'Illuminate\\Queue\\Failed\\FileFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/FileFailedJobProvider.php',
         'Illuminate\\Queue\\Failed\\NullFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/NullFailedJobProvider.php',
+        'Illuminate\\Queue\\Failed\\PrunableFailedJobProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Failed/PrunableFailedJobProvider.php',
         'Illuminate\\Queue\\InteractsWithQueue' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/InteractsWithQueue.php',
         'Illuminate\\Queue\\InvalidPayloadException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/InvalidPayloadException.php',
         'Illuminate\\Queue\\Jobs\\BeanstalkdJob' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Jobs/BeanstalkdJob.php',
@@ -2761,6 +2774,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Queue\\Middleware\\RateLimited' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/RateLimited.php',
         'Illuminate\\Queue\\Middleware\\RateLimitedWithRedis' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/RateLimitedWithRedis.php',
         'Illuminate\\Queue\\Middleware\\Skip' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/Skip.php',
+        'Illuminate\\Queue\\Middleware\\SkipIfBatchCancelled' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/SkipIfBatchCancelled.php',
         'Illuminate\\Queue\\Middleware\\ThrottlesExceptions' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/ThrottlesExceptions.php',
         'Illuminate\\Queue\\Middleware\\ThrottlesExceptionsWithRedis' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/ThrottlesExceptionsWithRedis.php',
         'Illuminate\\Queue\\Middleware\\WithoutOverlapping' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Middleware/WithoutOverlapping.php',
@@ -2780,6 +2794,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Redis\\Connections\\PacksPhpRedisValues' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connections/PacksPhpRedisValues.php',
         'Illuminate\\Redis\\Connections\\PhpRedisClusterConnection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connections/PhpRedisClusterConnection.php',
         'Illuminate\\Redis\\Connections\\PhpRedisConnection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connections/PhpRedisConnection.php',
+        'Illuminate\\Redis\\Connections\\PredisClusterConnection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connections/PredisClusterConnection.php',
         'Illuminate\\Redis\\Connections\\PredisConnection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connections/PredisConnection.php',
         'Illuminate\\Redis\\Connectors\\PhpRedisConnector' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connectors/PhpRedisConnector.php',
         'Illuminate\\Redis\\Connectors\\PredisConnector' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Redis/Connectors/PredisConnector.php',
@@ -2795,15 +2810,30 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Routing\\CompiledRouteCollection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/CompiledRouteCollection.php',
         'Illuminate\\Routing\\Console\\ControllerMakeCommand' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Console/ControllerMakeCommand.php',
         'Illuminate\\Routing\\Console\\MiddlewareMakeCommand' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Console/MiddlewareMakeCommand.php',
+        'Illuminate\\Routing\\Contracts\\CallableDispatcher' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Contracts/CallableDispatcher.php',
+        'Illuminate\\Routing\\Contracts\\ControllerDispatcher' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Contracts/ControllerDispatcher.php',
         'Illuminate\\Routing\\Controller' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Controller.php',
         'Illuminate\\Routing\\ControllerDispatcher' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php',
         'Illuminate\\Routing\\ControllerMiddlewareOptions' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/ControllerMiddlewareOptions.php',
+        'Illuminate\\Routing\\Controllers\\HasMiddleware' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Controllers/HasMiddleware.php',
         'Illuminate\\Routing\\Controllers\\Middleware' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Controllers/Middleware.php',
         'Illuminate\\Routing\\CreatesRegularExpressionRouteConstraints' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/CreatesRegularExpressionRouteConstraints.php',
+        'Illuminate\\Routing\\Events\\PreparingResponse' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Events/PreparingResponse.php',
+        'Illuminate\\Routing\\Events\\ResponsePrepared' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Events/ResponsePrepared.php',
+        'Illuminate\\Routing\\Events\\RouteMatched' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Events/RouteMatched.php',
+        'Illuminate\\Routing\\Events\\Routing' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Events/Routing.php',
+        'Illuminate\\Routing\\Exceptions\\BackedEnumCaseNotFoundException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Exceptions/BackedEnumCaseNotFoundException.php',
+        'Illuminate\\Routing\\Exceptions\\InvalidSignatureException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Exceptions/InvalidSignatureException.php',
         'Illuminate\\Routing\\Exceptions\\MissingRateLimiterException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Exceptions/MissingRateLimiterException.php',
         'Illuminate\\Routing\\Exceptions\\StreamedResponseException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Exceptions/StreamedResponseException.php',
         'Illuminate\\Routing\\Exceptions\\UrlGenerationException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Exceptions/UrlGenerationException.php',
+        'Illuminate\\Routing\\FiltersControllerMiddleware' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/FiltersControllerMiddleware.php',
         'Illuminate\\Routing\\ImplicitRouteBinding' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/ImplicitRouteBinding.php',
+        'Illuminate\\Routing\\Matching\\HostValidator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Matching/HostValidator.php',
+        'Illuminate\\Routing\\Matching\\MethodValidator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Matching/MethodValidator.php',
+        'Illuminate\\Routing\\Matching\\SchemeValidator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Matching/SchemeValidator.php',
+        'Illuminate\\Routing\\Matching\\UriValidator' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Matching/UriValidator.php',
+        'Illuminate\\Routing\\Matching\\ValidatorInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Matching/ValidatorInterface.php',
         'Illuminate\\Routing\\MiddlewareNameResolver' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/MiddlewareNameResolver.php',
         'Illuminate\\Routing\\Middleware\\SubstituteBindings' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php',
         'Illuminate\\Routing\\Middleware\\ThrottleRequests' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php',
@@ -2822,6 +2852,8 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Routing\\RouteBinding' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteBinding.php',
         'Illuminate\\Routing\\RouteCollection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteCollection.php',
         'Illuminate\\Routing\\RouteCollectionInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteCollectionInterface.php',
+        'Illuminate\\Routing\\RouteDependencyResolverTrait' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteDependencyResolverTrait.php',
+        'Illuminate\\Routing\\RouteFileRegistrar' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteFileRegistrar.php',
         'Illuminate\\Routing\\RouteGroup' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteGroup.php',
         'Illuminate\\Routing\\RouteParameterBinder' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteParameterBinder.php',
         'Illuminate\\Routing\\RouteRegistrar' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Routing/RouteRegistrar.php',
@@ -2839,6 +2871,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Illuminate\\Session\\CookieSessionHandler' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/CookieSessionHandler.php',
         'Illuminate\\Session\\DatabaseSessionHandler' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/DatabaseSessionHandler.php',
         'Illuminate\\Session\\EncryptedStore' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/EncryptedStore.php',
+        'Illuminate\\Session\\ExistenceAwareInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/ExistenceAwareInterface.php',
         'Illuminate\\Session\\FileSessionHandler' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/FileSessionHandler.php',
         'Illuminate\\Session\\Middleware\\AuthenticateSession' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/Middleware/AuthenticateSession.php',
         'Illuminate\\Session\\Middleware\\StartSession' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php',
@@ -8035,9 +8068,9 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit88970a0117c062eed55fa8728fc43833::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit88970a0117c062eed55fa8728fc43833::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit88970a0117c062eed55fa8728fc43833::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita15d1433edbd7065e4c198758b2efd13::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita15d1433edbd7065e4c198758b2efd13::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita15d1433edbd7065e4c198758b2efd13::$classMap;
 
         }, null, ClassLoader::class);
     }
