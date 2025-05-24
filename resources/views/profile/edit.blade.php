@@ -23,7 +23,7 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        max-width: 700px;
+        max-width: 900px;
     }
 
     .logo-centered {
@@ -36,6 +36,8 @@
         display: flex;
         gap: 10px;
         margin-bottom: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .tab-button {
@@ -73,10 +75,6 @@
         border-radius: 4px;
     }
 
-    .btn-primary:hover {
-        background-color: #bfa134;
-    }
-
     .btn-logout {
         background-color: #dc3545;
         color: white;
@@ -85,11 +83,6 @@
         font-weight: bold;
         border-radius: 4px;
         cursor: pointer;
-        float: right;
-    }
-
-    .btn-logout:hover {
-        background-color: #c82333;
     }
 
     .form-label {
@@ -119,15 +112,32 @@
         border-radius: 4px;
         background-color: #f9f9f9;
     }
+
+    .top-right-button {
+        position: absolute;
+        top: 30px;
+        right: 30px;
+    }
 </style>
 
 <script>
     function toggleTab(tab) {
         document.getElementById('profile-section').style.display = tab === 'profile' ? 'block' : 'none';
         document.getElementById('history-section').style.display = tab === 'history' ? 'block' : 'none';
+        @if($user->usertype == 0)
+        document.getElementById('product-section').style.display = tab === 'products' ? 'block' : 'none';
+        @endif
 
         document.getElementById('btn-profile').classList.toggle('active', tab === 'profile');
         document.getElementById('btn-history').classList.toggle('active', tab === 'history');
+        @if($user->usertype == 0)
+        document.getElementById('btn-products').classList.toggle('active', tab === 'products');
+        @endif
+    }
+
+    function toggleNewProductForm() {
+        const form = document.getElementById('new-product-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
     document.addEventListener('DOMContentLoaded', () => toggleTab('profile'));
@@ -138,13 +148,15 @@
         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-centered">
     </a>
 
-    <!-- Botões de navegação -->
     <div class="tab-buttons">
         <button id="btn-profile" class="tab-button" onclick="toggleTab('profile')">Editar Perfil</button>
         <button id="btn-history" class="tab-button" onclick="toggleTab('history')">Histórico</button>
+        @if($user->usertype == 0)
+        <button id="btn-products" class="tab-button" onclick="toggleTab('products')">Produto</button>
+        @endif
     </div>
 
-    <!-- Secção: Editar Perfil -->
+    <!-- Editar Perfil -->
     <div id="profile-section" class="gold-border-box">
         <h3 class="mb-4">Editar Perfil</h3>
 
@@ -176,7 +188,7 @@
         </form>
     </div>
 
-    <!-- Secção: Histórico -->
+    <!-- Histórico -->
     <div id="history-section" class="gold-border-box" style="display: none;">
         <h4>Histórico de Compras</h4>
         @if($orders && count($orders))
@@ -191,5 +203,57 @@
             <p>Sem compras registadas.</p>
         @endif
     </div>
+
+    <!-- Produtos (Admin Only) -->
+    @if($user->usertype == 0)
+    <div id="product-section" class="gold-border-box" style="display: none;">
+        <h4>Gestão de Produtos</h4>
+
+        <button onclick="toggleNewProductForm()" class="btn-primary top-right-button">+ Novo Produto</button>
+
+        <div id="new-product-form" style="display: none; margin-top: 20px;">
+            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <label class="form-label">Nome</label>
+                <input type="text" name="nome" class="form-control" required>
+
+                <label class="form-label">Imagem</label>
+                <input type="file" name="imagem" class="form-control" required>
+
+                <label class="form-label">Categoria</label>
+                <input type="text" name="categoria" class="form-control" required>
+
+                <label class="form-label">Descrição</label>
+                <textarea name="descricao" class="form-control" required></textarea>
+
+                <label class="form-label">Preço (€)</label>
+                <input type="number" step="0.01" name="preco" class="form-control" required>
+
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">Inserir</button>
+            </form>
+        </div>
+
+        @if(isset($products) && count($products))
+            <ul class="list-group mt-4">
+                @foreach($products as $product)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $product->nome }} — {{ $product->preco }}€
+                        <div>
+                            <a href="{{ route('products.edit', $product->id) }}" class="btn-primary">Editar</a>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-logout" onclick="return confirm('Eliminar este produto?')">Eliminar</button>
+                            </form>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p>Sem produtos registados.</p>
+        @endif
+    </div>
+    @endif
 </div>
 @endsection

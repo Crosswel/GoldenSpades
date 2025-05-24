@@ -5,6 +5,7 @@ use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductManagementController;
 
 /**
  * Página inicial
@@ -46,15 +47,28 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    // Painel do utilizador com favoritos, encomendas, etc.
+    // Painel do utilizador
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
-    // Atualização de dados do perfil pelo próprio utilizador
+    // Atualização de perfil
     Route::post('/dashboard/update', [UserController::class, 'updateProfile'])->name('dashboard.update');
 
-    // Página dedicada de perfil
+    // Página de perfil
     Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile');
     Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+
+    // Inserção direta de novo produto pelo admin no perfil
+    Route::post('/products', [ProdutoController::class, 'store'])->name('products.store');
+
+    // Gestão de produtos (Admin - rotas completas)
+    Route::middleware('can:isAdmin')->group(function () {
+        Route::get('/admin/products', [ProductManagementController::class, 'index'])->name('products.index');
+        Route::get('/admin/products/create', [ProductManagementController::class, 'create'])->name('products.create');
+        Route::post('/admin/products', [ProductManagementController::class, 'store'])->name('products.store.alt');
+        Route::get('/admin/products/{product}/edit', [ProductManagementController::class, 'edit'])->name('products.edit');
+        Route::put('/admin/products/{product}', [ProductManagementController::class, 'update'])->name('products.update');
+        Route::delete('/admin/products/{product}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
+    });
 });
 
 // Área de administração
