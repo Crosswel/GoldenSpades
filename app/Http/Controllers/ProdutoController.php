@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produto;
-use Illuminate\Support\Facades\Storage;
 
 class ProdutoController extends Controller
 {
@@ -44,6 +43,7 @@ class ProdutoController extends Controller
             'categoria' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
+            'quantidade' => 'required|integer|min:0',
             'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -57,12 +57,12 @@ class ProdutoController extends Controller
             'categoria' => $request->categoria,
             'descricao' => $request->descricao,
             'preco' => $request->preco,
+            'quantidade' => $request->quantidade,
             'imagem' => $imagemPath,
         ]);
 
         return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
     }
-
 
     // Editar produto
     public function edit(Produto $product)
@@ -78,16 +78,13 @@ class ProdutoController extends Controller
             'categoria' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'preco' => 'required|numeric|min:0',
+            'quantidade' => 'required|integer|min:0',
             'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $data = $request->only(['nome', 'categoria', 'descricao', 'preco']);
+        $data = $request->only(['nome', 'categoria', 'descricao', 'preco', 'quantidade']);
 
         if ($request->hasFile('imagem')) {
-            // Eliminar imagem antiga se existir
-            if ($product->imagem && Storage::disk('public')->exists($product->imagem)) {
-                Storage::disk('public')->delete($product->imagem);
-            }
             $data['imagem'] = $request->file('imagem')->store('produtos', 'public');
         }
 
@@ -99,13 +96,9 @@ class ProdutoController extends Controller
     // Eliminar produto
     public function destroy(Produto $product)
     {
-        // Eliminar imagem associada se existir
-        if ($product->imagem && Storage::disk('public')->exists($product->imagem)) {
-            Storage::disk('public')->delete($product->imagem);
-        }
-
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Produto eliminado com sucesso.');
     }
 }
+

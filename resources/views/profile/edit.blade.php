@@ -168,16 +168,13 @@
             @csrf
 
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control"
-                   value="{{ old('email', $user->email) }}" required>
+            <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
 
             <label for="address" class="form-label">Morada</label>
-            <input type="text" id="address" name="address" class="form-control"
-                   value="{{ old('address', $user->address) }}">
+            <input type="text" id="address" name="address" class="form-control" value="{{ old('address', $user->address) }}">
 
             <label for="phone" class="form-label">Telefone</label>
-            <input type="text" id="phone" name="phone" class="form-control"
-                   value="{{ old('phone', $user->phone) }}">
+            <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}">
 
             <button type="submit" class="btn-primary">Guardar Alterações</button>
         </form>
@@ -229,6 +226,9 @@
 
                 <label class="form-label">Preço (€)</label>
                 <input type="number" step="0.01" name="preco" class="form-control" required>
+
+                <label class="form-label">Quantidade</label>
+                <input type="number" name="quantidade" class="form-control" min="0" required>
 
                 <button type="submit" class="btn-primary" style="margin-top: 10px;">Inserir</button>
             </form>
