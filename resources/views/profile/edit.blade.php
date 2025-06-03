@@ -237,8 +237,20 @@
         @if(isset($products) && count($products))
             <ul class="list-group mt-4">
                 @foreach($products as $product)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ $product->nome }} — {{ $product->preco }}€
+                    <li class="list-group-item">
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            @if($product->imagem)
+                                <img src="{{ asset('storage/' . $product->imagem) }}" alt="{{ $product->nome }}" width="100" height="100">
+                            @endif
+
+                        <div style="flex-grow: 1;">
+                            <strong>{{ $product->nome }}</strong><br>
+                            {{ $product->descricao }}<br>
+                            Categoria: {{ $product->categoria }}<br>
+                            Preço: {{ number_format($product->preco, 2) }}€<br>
+                            Quantidade: {{ $product->quantidade }}
+                        </div>
+
                         <div>
                             <a href="{{ route('products.edit', $product->id) }}" class="btn-primary">Editar</a>
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
@@ -247,9 +259,12 @@
                                 <button type="submit" class="btn-logout" onclick="return confirm('Eliminar este produto?')">Eliminar</button>
                             </form>
                         </div>
-                    </li>
-                @endforeach
+                    </div>
+                </li>
+            @endforeach
             </ul>
+
+
         @else
             <p>Sem produtos registados.</p>
         @endif

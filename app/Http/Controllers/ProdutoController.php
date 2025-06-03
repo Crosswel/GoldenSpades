@@ -37,32 +37,33 @@ class ProdutoController extends Controller
 
     // Armazenar novo produto
     public function store(Request $request)
-    {
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'preco' => 'required|numeric|min:0',
-            'quantidade' => 'required|integer|min:0',
-            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+{
+    $request->validate([
+        'nome' => 'required|string|max:255',
+        'categoria' => 'required|string|max:255',
+        'descricao' => 'nullable|string',
+        'preco' => 'required|numeric|min:0',
+        'quantidade' => 'required|integer|min:0',
+        'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $imagemPath = null;
-        if ($request->hasFile('imagem')) {
-            $imagemPath = $request->file('imagem')->store('produtos', 'public');
-        }
-
-        Produto::create([
-            'nome' => $request->nome,
-            'categoria' => $request->categoria,
-            'descricao' => $request->descricao,
-            'preco' => $request->preco,
-            'quantidade' => $request->quantidade,
-            'imagem' => $imagemPath,
-        ]);
-
-        return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
+    $imagemPath = null;
+    if ($request->hasFile('imagem')) {
+        $imagemPath = $request->file('imagem')->store('produtos', 'public');
     }
+
+    Produto::create([
+        'nome' => $request->nome,
+        'categoria' => $request->categoria,
+        'descricao' => $request->descricao,
+        'preco' => $request->preco,
+        'quantidade' => $request->quantidade,
+        'imagem' => $imagemPath,
+    ]);
+
+    return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
+}
+
 
     // Editar produto
     public function edit(Produto $product)
