@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produto;
+use Illuminate\Support\Str;
 
 class ProdutoController extends Controller
 {
@@ -37,33 +38,33 @@ class ProdutoController extends Controller
 
     // Armazenar novo produto
     public function store(Request $request)
-{
-    $request->validate([
-        'nome' => 'required|string|max:255',
-        'categoria' => 'required|string|max:255',
-        'descricao' => 'nullable|string',
-        'preco' => 'required|numeric|min:0',
-        'quantidade' => 'required|integer|min:0',
-        'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+    {
+        $request->validate([
+            'nome'       => 'required|string|max:255',
+            'categoria'  => 'required|string|max:255',
+            'descricao'  => 'nullable|string',
+            'preco'      => 'required|numeric|min:0',
+            'quantidade' => 'required|integer|min:0',
+            'imagem'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-    $imagemPath = null;
-    if ($request->hasFile('imagem')) {
-        $imagemPath = $request->file('imagem')->store('produtos', 'public');
+        $imagemPath = null;
+        if ($request->hasFile('imagem')) {
+            $categoriaFolder = Str::slug($request->categoria); // pasta com base na categoria
+            $imagemPath = $request->file('imagem')->store("images/{$categoriaFolder}", 'public');
+        }
+
+        Produto::create([
+            'nome'       => $request->nome,
+            'categoria'  => $request->categoria,
+            'descricao'  => $request->descricao,
+            'preco'      => $request->preco,
+            'quantidade' => $request->quantidade,
+            'imagem'     => $imagemPath,
+        ]);
+
+        return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
     }
-
-    Produto::create([
-        'nome' => $request->nome,
-        'categoria' => $request->categoria,
-        'descricao' => $request->descricao,
-        'preco' => $request->preco,
-        'quantidade' => $request->quantidade,
-        'imagem' => $imagemPath,
-    ]);
-
-    return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
-}
-
 
     // Editar produto
     public function edit(Produto $product)
@@ -75,18 +76,19 @@ class ProdutoController extends Controller
     public function update(Request $request, Produto $product)
     {
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'preco' => 'required|numeric|min:0',
+            'nome'       => 'required|string|max:255',
+            'categoria'  => 'required|string|max:255',
+            'descricao'  => 'nullable|string',
+            'preco'      => 'required|numeric|min:0',
             'quantidade' => 'required|integer|min:0',
-            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagem'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $data = $request->only(['nome', 'categoria', 'descricao', 'preco', 'quantidade']);
 
         if ($request->hasFile('imagem')) {
-            $data['imagem'] = $request->file('imagem')->store('produtos', 'public');
+            $categoriaFolder = Str::slug($request->categoria);
+            $data['imagem'] = $request->file('imagem')->store("images/{$categoriaFolder}", 'public');
         }
 
         $product->update($data);
@@ -102,4 +104,3 @@ class ProdutoController extends Controller
         return redirect()->route('products.index')->with('success', 'Produto eliminado com sucesso.');
     }
 }
-
