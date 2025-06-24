@@ -18,7 +18,7 @@ class UserController extends Controller
         $orders = $user->orders ?? collect();
         $favorites = $user->favorites ?? collect();
 
-        return view('dashboard', compact('user', 'orders', 'favorites'));
+        return view('home', compact('user', 'orders', 'favorites'));
     }
 
     /**
@@ -38,6 +38,6 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->save();
 
-        return redirect()->route('dashboard')->with('success', 'Perfil atualizado com sucesso.');
+        return redirect()->route('home')->with('success', 'Perfil atualizado com sucesso.');
     }
 }
