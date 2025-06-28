@@ -237,31 +237,39 @@
         @if(isset($products) && count($products))
             <ul class="list-group mt-4">
                 @foreach($products as $product)
-                    <li class="list-group-item">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            @if($product->imagem)
-                                <img src="{{ asset('storage/' . $product->imagem) }}" alt="{{ $product->nome }}" width="100" height="100">
-                            @endif
+    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px;">
+        
+        <div style="flex: 0 0 120px;">
+            @if($product->imagem)
+                <img src="{{ asset('storage/' . $product->imagem) }}"
+                     alt="{{ $product->nome }}"
+                     style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
+            @else
+                <div style="width: 120px; height: 120px; background-color: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <span>Sem imagem</span>
+                </div>
+            @endif
+        </div>
 
-                        <div style="flex-grow: 1;">
-                            <strong>{{ $product->nome }}</strong><br>
-                            {{ $product->descricao }}<br>
-                            Categoria: {{ $product->categoria }}<br>
-                            Preço: {{ number_format($product->preco, 2) }}€<br>
-                            Quantidade: {{ $product->quantidade }}
-                        </div>
+        <div style="flex: 1;">
+            <h4 style="margin: 0 0 5px 0;">{{ $product->nome }}</h4>
+            <p style="margin: 0 0 5px 0;">{{ $product->descricao }}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Categoria:</strong> {{ $product->categoria }}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Preço:</strong> {{ number_format($product->preco, 2) }} €</p>
+            <p style="margin: 0;"><strong>Quantidade:</strong> {{ $product->quantidade }}</p>
+        </div>
 
-                        <div>
-                            <a href="{{ route('products.edit', $product->id) }}" class="btn-primary">Editar</a>
-                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-logout" onclick="return confirm('Eliminar este produto?')">Eliminar</button>
-                            </form>
-                        </div>
-                    </div>
-                </li>
-            @endforeach
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="{{ route('products.edit', $product->id) }}" class="btn-primary">Editar</a>
+            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn-logout" onclick="return confirm('Eliminar este produto?')">Eliminar</button>
+            </form>
+        </div>
+    </li>
+@endforeach
+
             </ul>
 
 

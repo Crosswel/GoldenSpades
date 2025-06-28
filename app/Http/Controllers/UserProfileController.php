@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,10 +14,11 @@ class UserProfileController extends Controller
     {
         $user = Auth::user();
         $orders = $user->orders;
-
+        $products = Produto::all();
         return view('profile.edit', [
             'user' => $user,
             'orders' => $orders,
+            'products' => $products,
         ]);
     }
 

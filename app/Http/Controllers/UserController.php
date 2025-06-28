@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Produto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,8 +17,8 @@ class UserController extends Controller
         // Relações devem estar definidas no modelo User
         $orders = $user->orders ?? collect();
         $favorites = $user->favorites ?? collect();
-
-        return view('home', compact('user', 'orders', 'favorites'));
+        $produtos = Produto::all();
+        return view('home', compact('user', 'orders', 'favorites', 'produtos'));
     }
 
     /**
