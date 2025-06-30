@@ -118,6 +118,16 @@
         top: 30px;
         right: 30px;
     }
+
+    #new-product-form {
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        max-height: 0;
+    }
+    #new-product-form.show {
+        max-height: 1000px;
+    }
+
 </style>
 
 <script>
@@ -135,13 +145,74 @@
         @endif
     }
 
-    function toggleNewProductForm() {
-        const form = document.getElementById('new-product-form');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
-    }
+        function toggleNewProductForm() {
+            const form = document.getElementById('new-product-form');
+            form.classList.toggle('show');
+        }
+
 
     document.addEventListener('DOMContentLoaded', () => toggleTab('profile'));
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('new-product-form');
+        const productList = document.getElementById('product-list');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('{{ route('products.store') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // fecha o formulário
+                form.classList.remove('show');
+                // mostra alerta
+                alert('Produto adicionado com sucesso!');
+                // adiciona o produto dinamicamente
+                const newItem = `
+                    <li class="list-group-item">
+                        <div style="display:flex;align-items:center;gap:20px;">
+                            <img src="/storage/${data.imagem}" alt="${data.nome}" width="100">
+                            <div>
+                                <strong>${data.nome}</strong><br>
+                                ${data.descricao}<br>
+                                Categoria: ${data.categoria}<br>
+                                Preço: ${Number(data.preco).toFixed(2)}€<br>
+                                Quantidade: ${data.quantidade}
+                            </div>
+                            <div>
+                                <a href="/products/${data.id}/edit" class="btn-primary">Editar</a>
+                                <form action="/products/${data.id}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-logout">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                `;
+                productList.insertAdjacentHTML('beforeend', newItem);
+                // limpa o formulário
+                form.reset();
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Erro ao adicionar produto');
+            });
+        });
+    });
+</script>
+
+
 
 <div class="profile-page">
     <a href="/">
@@ -204,11 +275,14 @@
     <!-- Produtos (Admin Only) -->
     @if($user->usertype == 0)
     <div id="product-section" class="gold-border-box" style="display: none;">
-        <h4>Gestão de Produtos</h4>
 
-        <button onclick="toggleNewProductForm()" class="btn-primary top-right-button">+ Novo Produto</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h4>Gestão de Produtos</h4>
+            <button onclick="toggleNewProductForm()" class="btn-primary">+ Novo Produto</button>
+        </div>
 
-        <div id="new-product-form" style="display: none; margin-top: 20px;">
+        
+        <div id="new-product-form" style="margin-top: 20px;">
             <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -236,39 +310,52 @@
 
         @if(isset($products) && count($products))
             <ul class="list-group mt-4">
-                @foreach($products as $product)
-    <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px;">
-        
-        <div style="flex: 0 0 120px;">
-            @if($product->imagem)
-                <img src="{{ asset('storage/' . $product->imagem) }}"
-                     alt="{{ $product->nome }}"
-                     style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
-            @else
-                <div style="width: 120px; height: 120px; background-color: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                    <span>Sem imagem</span>
+              <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+</div>
+
+@if(isset($products) && count($products))
+    <ul class="list-group mt-4">
+        @foreach($products as $product)
+            <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px;">
+                
+                {{-- Imagem --}}
+                <div style="flex: 0 0 120px;">
+                    @if($product->imagem)
+                        <img src="{{ asset('storage/' . $product->imagem) }}"
+                             alt="{{ $product->nome }}"
+                             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
+                    @else
+                        <div style="width: 120px; height: 120px; background-color: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span>Sem imagem</span>
+                        </div>
+                    @endif
                 </div>
-            @endif
-        </div>
 
-        <div style="flex: 1;">
-            <h4 style="margin: 0 0 5px 0;">{{ $product->nome }}</h4>
-            <p style="margin: 0 0 5px 0;">{{ $product->descricao }}</p>
-            <p style="margin: 0 0 5px 0;"><strong>Categoria:</strong> {{ $product->categoria }}</p>
-            <p style="margin: 0 0 5px 0;"><strong>Preço:</strong> {{ number_format($product->preco, 2) }} €</p>
-            <p style="margin: 0;"><strong>Quantidade:</strong> {{ $product->quantidade }}</p>
-        </div>
+                {{-- Detalhes --}}
+                <div style="flex: 1;">
+                    <h4 style="margin: 0 0 8px 0;">{{ $product->nome }}</h4>
+                    <p style="margin: 0 0 5px 0;">{{ $product->descricao }}</p>
+                    <p style="margin: 0 0 5px 0;"><strong>Categoria:</strong> {{ $product->categoria }}</p>
+                    <p style="margin: 0 0 5px 0;"><strong>Preço:</strong> {{ number_format($product->preco, 2) }} €</p>
+                    <p style="margin: 0;"><strong>Quantidade:</strong> {{ $product->quantidade }}</p>
+                </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-            <a href="{{ route('products.edit', $product->id) }}" class="btn-primary">Editar</a>
-            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-logout" onclick="return confirm('Eliminar este produto?')">Eliminar</button>
-            </form>
-        </div>
-    </li>
-@endforeach
+                {{-- Botões --}}
+                <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center;">
+                    <a href="{{ route('products.edit', $product->id) }}" class="btn-primary" style="width: 100px; text-align: center;">Editar</a>
+                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Eliminar este produto?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-logout" style="width: 100px;">Eliminar</button>
+                    </form>
+                </div>
+            </li>
+        @endforeach
+    </ul>
+@else
+    <p>Sem produtos registados.</p>
+@endif
+
 
             </ul>
 
