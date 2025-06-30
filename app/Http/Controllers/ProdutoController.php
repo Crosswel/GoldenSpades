@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Produto;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
 {
-    // Produtos da categoria Relógios
+    // Produtos por categoria exemplo
     public function relogios()
     {
         $produtos = Produto::where('categoria', 'Relógios')->get();
         return view('relogios', compact('produtos'));
     }
 
-    // Pesquisa por nome
+    // Pesquisa
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -23,7 +22,7 @@ class ProdutoController extends Controller
         return view('search_results', compact('produtos'));
     }
 
-    // Listagem de produtos (admin)
+    // Listagem admin
     public function index()
     {
         $produtos = Produto::all();
@@ -40,67 +39,100 @@ class ProdutoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome'       => 'required|string|max:255',
-            'categoria'  => 'required|string|max:255',
-            'descricao'  => 'nullable|string',
-            'preco'      => 'required|numeric|min:0',
+            'nome' => 'required|string|max:255',
+            'categoria' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'preco' => 'required|numeric|min:0',
             'quantidade' => 'required|integer|min:0',
-            'imagem'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $imagemPath = null;
+
         if ($request->hasFile('imagem')) {
-            $categoriaFolder = Str::slug($request->categoria); // pasta com base na categoria
-            $imagemPath = $request->file('imagem')->store("images/{$categoriaFolder}", 'public');
+            $categoriaFolder = strtolower($request->categoria);
+
+            $destinationPath = public_path("images/{$categoriaFolder}");
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            $nomeImagem = time() . '_' . $request->file('imagem')->getClientOriginalName();
+            $request->file('imagem')->move($destinationPath, $nomeImagem);
+
+            $imagemPath = "images/{$categoriaFolder}/{$nomeImagem}";
         }
 
-        Produto::create([
-            'nome'       => $request->nome,
-            'categoria'  => $request->categoria,
-            'descricao'  => $request->descricao,
-            'preco'      => $request->preco,
+        $produto = Produto::create([
+            'nome' => $request->nome,
+            'categoria' => $request->categoria,
+            'descricao' => $request->descricao,
+            'preco' => $request->preco,
             'quantidade' => $request->quantidade,
-            'imagem'     => $imagemPath,
+            'imagem' => $imagemPath,
         ]);
+
+        if ($request->ajax()) {
+            return response()->json($produto);
+        }
 
         return redirect()->route('profile')->with('success', 'Produto adicionado com sucesso.');
     }
 
-    // Editar produto
+    // Editar
     public function edit(Produto $product)
     {
         return view('admin.produtos.edit', compact('product'));
     }
 
-    // Atualizar produto
+    // Atualizar
     public function update(Request $request, Produto $product)
     {
         $request->validate([
-            'nome'       => 'required|string|max:255',
-            'categoria'  => 'required|string|max:255',
-            'descricao'  => 'nullable|string',
-            'preco'      => 'required|numeric|min:0',
+            'nome' => 'required|string|max:255',
+            'categoria' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'preco' => 'required|numeric|min:0',
             'quantidade' => 'required|integer|min:0',
-            'imagem'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $data = $request->only(['nome', 'categoria', 'descricao', 'preco', 'quantidade']);
 
         if ($request->hasFile('imagem')) {
-            $categoriaFolder = Str::slug($request->categoria);
-            $data['imagem'] = $request->file('imagem')->store("images/{$categoriaFolder}", 'public');
+            $categoriaFolder = strtolower($request->categoria);
+            $destinationPath = public_path("images/{$categoriaFolder}");
+
+        if (!file_exists($destinationPath)) {
+        mkdir($destinationPath, 0777, true);
         }
+
+        $nomeImagem = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $request->file('imagem')->getClientOriginalName());
+        $request->file('imagem')->move($destinationPath, $nomeImagem);
+
+        $imagemPath = "images/{$categoriaFolder}/{$nomeImagem}";
+    }
+
 
         $product->update($data);
 
-        return redirect()->route('products.index')->with('success', 'Produto atualizado com sucesso.');
+        return redirect()->route('profile')->with('success', 'Produto atualizado com sucesso.');
     }
 
-    // Eliminar produto
+    // Eliminar
     public function destroy(Produto $product)
     {
         $product->delete();
-
-        return redirect()->route('products.index')->with('success', 'Produto eliminado com sucesso.');
+        return redirect()->route('profile')->with('success', 'Produto eliminado com sucesso.');
     }
+
+public function show($id)
+{
+    $produto = Produto::findOrFail($id);
+    return view('produto', compact('produto'));
+}
+
+
+
+
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoldSpades - Home</title>
+    <title>GoldSpades - {{ ucfirst($categoria) }}</title>
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
 </head>
 <body>
@@ -46,7 +46,6 @@
             </a>
             <!-- Ícones -->
             <div class="header-icons">
-                <!-- Pesquisa -->
                 <div class="search-container" id="searchBox">
                     <form id="searchForm" action="{{ route('search') }}" method="GET">
                         <input type="text" name="q" placeholder="Procurar produto..." class="search-input" required>
@@ -55,8 +54,6 @@
                         </button>
                     </form>
                 </div>
-
-                <!-- Login / Perfil -->
                 @guest
                     <button onclick="openLogin()">
                         <img src="{{ asset('images/Profile.png') }}" alt="Login" style="height: 24px;">
@@ -67,18 +64,14 @@
                     </a>
                 @endguest
 
-                <!-- Favoritos -->
                 <a href="{{ route('favoritos') }}">
                     <img src="{{ asset('images/Favorito.png') }}" alt="Favoritos" style="height: 24px;">
                 </a>
-
-                <!-- Carrinho -->
 
                 @php
                     $carrinho = session('carrinho', []);
                     $totalItens = array_sum($carrinho);
                 @endphp
-
 
                 @auth
                 <button onclick="openCart()" style="position:relative;">
@@ -99,73 +92,68 @@
                     @endif
                 </button>
                 @endauth
-
-                
             </div>
         </div>
     </header>
 
     <!-- Conteúdo principal -->
     <div class="home-container">
-        @php
-            $produtosPorCategoria = $produtosPorCategoria ?? collect();
-        @endphp
-        @foreach($produtosPorCategoria as $categoria => $produtos)
-            @if($produtos->count())
-                <section style="margin-bottom:40px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2 style="margin:0;">{{ $categoria }}</h2>
-                        <a href="{{ route('categoria', ['categoria' => strtolower($categoria)]) }}" style="color:#d4af37; font-weight:bold; text-decoration:none;">
-                            Ver mais &raquo;
-                        </a>
-                    </div>
-                    <div class="products-grid"
-                        style="
-                            display: grid;
-                            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                            gap: 20px;
-                            justify-content: center;
-                            align-items: start;
-                            margin-top: 15px;
-                            max-width: 1200px;
-                            margin-left: auto;
-                            margin-right: auto;
-                        ">
-                        @foreach($produtos as $produto)
-                            <div class="product-card"
-                                style="
-                                    background:#fff;
-                                    border:1px solid #ddd;
-                                    border-radius:8px;
-                                    overflow:hidden;
-                                    box-shadow:0 0 8px rgba(0,0,0,0.1);
-                                    text-align:center;
-                                    transition: transform 0.2s;
-                                    max-width: 300px;
-                                    margin: 0 auto;
-                                ">
-                                <a href="{{ route('produto', ['id' => $produto->id]) }}">
-                                    <img src="{{ asset($produto->imagem) }}"
-                                    alt="{{ $produto->nome }}"
-                                    style="width:100%; height:220px; object-fit:cover;">
-                                </a>
-                                <div style="padding:15px;">
-                                    <h3 style="font-size:1rem; margin:0;">{{ $produto->nome }}</h3>
-                                    <p style="margin:5px 0; color:#777;">{{ number_format($produto->preco,2) }} €</p>
-                                    <a href="{{ route('produto', ['id' => $produto->id]) }}"
-                                        style="display:inline-block;margin-top:10px;background:#d4af37;color:#fff;
-                                        padding:8px 15px;border-radius:4px;text-decoration:none;">
-                                        Ver detalhes
-                                    </a>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+    <section style="margin-bottom:40px;">
+        <div style="margin-bottom: 15px;">
+            <h2 style="margin:0;">{{ ucfirst($categoria) }}</h2>
+        </div>
 
-                </section>
-            @endif
-        @endforeach
-    </div>
+<div class="products-grid"
+     style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        justify-content: center;
+        align-items: start;
+        margin-top: 15px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+     ">
+    @forelse($produtos as $produto)
+        <div class="product-card"
+             style="
+                background:#fff;
+                border:1px solid #ddd;
+                border-radius:8px;
+                overflow:hidden;
+                box-shadow:0 0 8px rgba(0,0,0,0.1);
+                text-align:center;
+                transition: transform 0.2s;
+                width: 100%;
+                max-width: 300px;
+             ">
+            <a href="{{ route('produto', ['id' => $produto->id]) }}">
+                <img src="{{ asset($produto->imagem) }}"
+                     alt="{{ $produto->nome }}"
+                     style="width:100%; height:220px; object-fit:cover;">
+            </a>
+            <div style="padding:15px;">
+                <h3 style="font-size:1rem; margin:0;">{{ $produto->nome }}</h3>
+                <p style="margin:5px 0; color:#777;">{{ number_format($produto->preco,2) }} €</p>
+                <a href="{{ route('produto', ['id' => $produto->id]) }}"
+                   style="display:inline-block;margin-top:10px;background:#d4af37;color:#fff;
+                   padding:8px 15px;border-radius:4px;text-decoration:none;">
+                   Ver detalhes
+                </a>
+            </div>
+        </div>
+    @empty
+        <p>Sem produtos nesta categoria.</p>
+    @endforelse
+</div>
+
+
+        <div style="margin-top:20px;">
+            {{ $produtos->links() }}
+        </div>
+    </section>
+</div>
 
 
     <!-- Painel de Login -->
@@ -176,21 +164,11 @@
         </div>
         <div class="login-content">
             <h2>JÁ TENHO UMA CONTA</h2>
-
             @if ($errors->any())
-                <div style="
-                    background-color: #ffe5e5;
-                    border: 1px solid #ff4d4d;
-                    color: #b30000;
-                    padding: 10px;
-                    border-radius: 5px;
-                    margin-bottom: 15px;
-                    font-size: 14px;
-                ">
+                <div style="background-color:#ffe5e5; border:1px solid #ff4d4d; color:#b30000; padding:10px; border-radius:5px; margin-bottom:15px; font-size:14px;">
                     {{ $errors->first() }}
                 </div>
             @endif
-
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <input type="email" name="email" placeholder="E-mail" required>
@@ -198,9 +176,7 @@
                 <a href="#">Esqueceu a palavra-passe?</a>
                 <button type="submit">Iniciar Sessão</button>
             </form>
-            <div class="new-user">
-                Novo cliente? <a href="#" onclick="switchToRegister()"><strong>Crie a sua conta</strong></a>
-            </div>
+            <div class="new-user">Novo cliente? <a href="#" onclick="switchToRegister()"><strong>Crie a sua conta</strong></a></div>
         </div>
     </div>
 
@@ -213,75 +189,35 @@
         <div class="login-content">
             <h2>CRIAR UMA CONTA</h2>
             <form action="{{ route('register') }}" method="POST">
-    @csrf
-    <input type="text" name="name" placeholder="Nome" required>
-    <input type="email" name="email" placeholder="E-mail" required>
-    <input type="password" name="password" placeholder="Palavra-passe" required>
-    <input type="password" name="password_confirmation" placeholder="Confirmar palavra-passe" required>
-    <button type="submit">Registar</button>
-</form>
-
-            <div class="new-user">
-                Já tem uma conta? <a href="#" onclick="switchToLogin()"><strong>Faça o login</strong></a>
-            </div>
+                @csrf
+                <input type="text" name="name" placeholder="Nome" required>
+                <input type="email" name="email" placeholder="E-mail" required>
+                <input type="password" name="password" placeholder="Palavra-passe" required>
+                <input type="password" name="password_confirmation" placeholder="Confirmar palavra-passe" required>
+                <button type="submit">Registar</button>
+            </form>
+            <div class="new-user">Já tem uma conta? <a href="#" onclick="switchToLogin()"><strong>Faça o login</strong></a></div>
         </div>
     </div>
+
     <!-- Scripts -->
     <script>
-        function toggleMenu() {
-            document.getElementById('sideMenu').classList.toggle('open');
-            document.getElementById('menuOverlay').classList.toggle('visible');
-        }
-
-        function closeMenu() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('menuOverlay').classList.remove('visible');
-        }
-
-        function openLogin() {
-            document.getElementById('loginPanel').classList.add('show');
-            document.getElementById('overlay').classList.add('visible');
-        }
-
-        function closeLogin() {
-            document.getElementById('loginPanel').classList.remove('show');
-            document.getElementById('overlay').classList.remove('visible');
-        }
-
-        function openRegister() {
-            document.getElementById('registerPanel').classList.add('show');
-            document.getElementById('overlay').classList.add('visible');
-        }
-
-        function closeRegister() {
-            document.getElementById('registerPanel').classList.remove('show');
-            document.getElementById('overlay').classList.remove('visible');
-        }
-
-        function switchToRegister() {
-            closeLogin();
-            setTimeout(() => openRegister(), 300);
-        }
-
-        function switchToLogin() {
-            closeRegister();
-            setTimeout(() => openLogin(), 300);
-        }
-
-        // 🔍 Toggle da barra de busca
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('menuOverlay').classList.toggle('visible'); }
+        function closeMenu() { document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').classList.remove('visible'); }
+        function openLogin() { document.getElementById('loginPanel').classList.add('show'); document.getElementById('overlay').classList.add('visible'); }
+        function closeLogin() { document.getElementById('loginPanel').classList.remove('show'); document.getElementById('overlay').classList.remove('visible'); }
+        function openRegister() { document.getElementById('registerPanel').classList.add('show'); document.getElementById('overlay').classList.add('visible'); }
+        function closeRegister() { document.getElementById('registerPanel').classList.remove('show'); document.getElementById('overlay').classList.remove('visible'); }
+        function switchToRegister() { closeLogin(); setTimeout(() => openRegister(), 300); }
+        function switchToLogin() { closeRegister(); setTimeout(() => openLogin(), 300); }
         document.addEventListener('DOMContentLoaded', function () {
             const toggleBtn = document.getElementById('toggleSearch');
             const searchBox = document.getElementById('searchBox');
-
             toggleBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 searchBox.classList.toggle('active');
                 const input = searchBox.querySelector('.search-input');
-                if (searchBox.classList.contains('active')) {
-                    input.focus();
-                } else {
-                    input.value = '';
-                }
+                if (searchBox.classList.contains('active')) { input.focus(); } else { input.value = ''; }
             });
         });
     </script>
@@ -294,6 +230,7 @@
     });
 </script>
 @endif
+
 
 
 <!-- Painel do Carrinho (copiado do app.blade.php) -->
@@ -399,6 +336,8 @@
         }).then(() => location.reload());
     }
 </script>
+
+
 
 
 </body>

@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductManagementController;
+use App\Http\Controllers\CarrinhoController;
 
 /**
  * Página inicial
@@ -23,13 +24,7 @@ Route::get('/favoritos', function () {
     return view('favoritos');
 })->name('favoritos');
 
-Route::get('/novacolecao', function () {
-    return view('novacolecao');
-})->name('novacolecao');
-
-Route::get('/produto', function () {
-    return view('produto');
-})->name('produto');
+Route::get('/novacolecao', [HomeController::class, 'novaColecao'])->name('novacolecao');
 
 /**
  * Pesquisa e produtos
@@ -57,10 +52,10 @@ Route::middleware([
     Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile');
     Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 
-    // Inserção direta de novo produto pelo admin no perfil
+    // Inserção direta de novo produto pelo admin
     Route::post('/products', [ProdutoController::class, 'store'])->name('products.store');
 
-    // Gestão de produtos (Admin - rotas completas)
+    // Gestão de produtos
     Route::middleware('can:isAdmin')->group(function () {
         Route::get('/admin/products', [ProductManagementController::class, 'index'])->name('products.index');
         Route::get('/admin/products/create', [ProductManagementController::class, 'create'])->name('products.create');
@@ -75,3 +70,37 @@ Route::middleware([
 Route::get('/admin', function () {
     return view('admin.dashboard');
 })->middleware(['auth'])->name('admin.dashboard');
+
+Route::get('/categoria/{categoria}', [HomeController::class, 'categoria'])->name('categoria');
+
+// esta é a CORRETA
+Route::get('/produto/{id}', [ProdutoController::class, 'show'])->name('produto');
+
+// Carrinho
+Route::post('/cart/add', [CarrinhoController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CarrinhoController::class, 'update'])->name('cart.update');
+Route::get('/cart/remove/{id}', [CarrinhoController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/clear', [CarrinhoController::class, 'clear'])->name('cart.clear');
+
+
+// Finalizar pedido
+Route::post('/pedido/finalizar', function() {
+    session()->forget('carrinho');
+    return redirect()->route('home')->with('success', 'Pedido realizado com sucesso!');
+})->name('pedido.finalizar');
+
+
+Route::post('/pedido/finalizar', function() {
+    // aqui futuramente você implementa a lógica de pagamento
+    session()->forget('carrinho');
+    return redirect()->route('home')->with('success', 'Pedido realizado com sucesso!');
+})->name('pedido.finalizar');
+
+
+Route::get('/checkout', [CarrinhoController::class, 'checkout'])->name('checkout');
+Route::post('/checkout/endereco', [CarrinhoController::class, 'processarEndereco'])->name('checkout.endereco');
+Route::get('/checkout/pagamento', [CarrinhoController::class, 'pagamento'])->name('checkout.pagamento');
+
+Route::post('/checkout/finalizar', [CarrinhoController::class, 'finalizar'])->name('checkout.finalizar');
+Route::patch('/admin/orders/{order}', [\App\Http\Controllers\AdminOrderController::class, 'update'])->name('admin.orders.update');
+Route::get('/admin/orders', [\App\Http\Controllers\AdminOrderController::class, 'index'])->name('admin.orders.index');

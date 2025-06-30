@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Produto;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,8 +15,25 @@ class UserProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $orders = $user->orders;
-        $products = Produto::all();
+
+        if ($user->usertype == 0) {
+            // ADMIN
+            $orders = Order::with(['items.produto', 'user'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $products = Produto::all();
+
+        } else {
+            // USER normal
+            $orders = Order::with(['items.produto'])
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $products = [];
+        }
+
         return view('profile.edit', [
             'user' => $user,
             'orders' => $orders,
@@ -40,5 +59,11 @@ class UserProfileController extends Controller
         $user->save();
 
         return redirect()->route('profile.edit')->with('success', 'Perfil atualizado com sucesso!');
+    }
+
+    public function historico()
+    {
+        $historico = session('historico', []);
+        return view('profile.historico', compact('historico'));
     }
 }

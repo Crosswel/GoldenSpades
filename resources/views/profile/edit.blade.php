@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.profile')
 
 @section('title', 'Perfil')
 
@@ -12,11 +12,12 @@
     }
 
     body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Figtree', sans-serif;
+    font-family: 'Figtree', sans-serif;
+    background-color: #f7f8fc;
+    margin: 0;
+    padding: 0;
     }
+
 
     .profile-page {
         display: flex;
@@ -24,6 +25,8 @@
         align-items: center;
         width: 100%;
         max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
     .logo-centered {
@@ -120,13 +123,15 @@
     }
 
     #new-product-form {
-        overflow: hidden;
-        transition: max-height 0.5s ease;
-        max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    max-height: 0;
     }
     #new-product-form.show {
-        max-height: 1000px;
+    max-height: 1200px;
+    overflow: auto;
     }
+
 
 </style>
 
@@ -148,7 +153,15 @@
         function toggleNewProductForm() {
             const form = document.getElementById('new-product-form');
             form.classList.toggle('show');
+
+            if (form.classList.contains('show')) {
+                form.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         }
+
 
 
     document.addEventListener('DOMContentLoaded', () => toggleTab('profile'));
@@ -156,60 +169,69 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('new-product-form');
-        const productList = document.getElementById('product-list');
+    const form = document.getElementById('new-product-form');
+    const productList = document.getElementById('product-list');
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            const formData = new FormData(form);
+        const formData = new FormData(form);
 
-            fetch('{{ route('products.store') }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // fecha o formulário
-                form.classList.remove('show');
-                // mostra alerta
-                alert('Produto adicionado com sucesso!');
-                // adiciona o produto dinamicamente
-                const newItem = `
-                    <li class="list-group-item">
-                        <div style="display:flex;align-items:center;gap:20px;">
-                            <img src="/storage/${data.imagem}" alt="${data.nome}" width="100">
-                            <div>
-                                <strong>${data.nome}</strong><br>
-                                ${data.descricao}<br>
-                                Categoria: ${data.categoria}<br>
-                                Preço: ${Number(data.preco).toFixed(2)}€<br>
-                                Quantidade: ${data.quantidade}
-                            </div>
-                            <div>
-                                <a href="/products/${data.id}/edit" class="btn-primary">Editar</a>
-                                <form action="/products/${data.id}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-logout">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </li>
-                `;
-                productList.insertAdjacentHTML('beforeend', newItem);
-                // limpa o formulário
-                form.reset();
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Erro ao adicionar produto');
-            });
+        fetch('{{ route('products.store') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // fecha o formulário suavemente
+            form.parentElement.classList.remove('show');
+
+            // mostra alerta
+            alert('Produto adicionado com sucesso!');
+
+            // adiciona o produto dinamicamente
+            const newItem = `
+                <li class="list-group-item" style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:15px;">
+                    <div style="flex:0 0 120px;">
+                        <img src="/storage/${data.imagem}" alt="${data.nome}" style="width:120px;height:120px;object-fit:cover;border-radius:8px;border:1px solid #ccc;">
+                    </div>
+                    <div style="flex:1;">
+                        <h4 style="margin:0 0 8px 0;">${data.nome}</h4>
+                        <p style="margin:0 0 5px 0;">${data.descricao}</p>
+                        <p style="margin:0 0 5px 0;"><strong>Categoria:</strong> ${data.categoria}</p>
+                        <p style="margin:0 0 5px 0;"><strong>Preço:</strong> ${Number(data.preco).toFixed(2)} €</p>
+                        <p style="margin:0;"><strong>Quantidade:</strong> ${data.quantidade}</p>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">
+                        <a href="/admin/products/${data.id}/edit" class="btn-primary" style="width:100px;text-align:center;">Editar</a>
+                        <form action="/admin/products/${data.id}" method="POST" onsubmit="return confirm('Eliminar este produto?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-logout" style="width:100px;">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+            `;
+            productList.insertAdjacentHTML('beforeend', newItem);
+
+            // limpa o form
+            form.reset();
+
+            // força a ficar no tab de produtos
+            toggleTab('products');
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Erro ao adicionar produto');
         });
     });
+});
+
+
 </script>
 
 
@@ -257,20 +279,45 @@
     </div>
 
     <!-- Histórico -->
-    <div id="history-section" class="gold-border-box" style="display: none;">
-        <h4>Histórico de Compras</h4>
-        @if($orders && count($orders))
-            <ul class="list-group">
-                @foreach($orders as $order)
-                    <li class="list-group-item">
-                        Compra #{{ $order->id }} — {{ $order->created_at->format('d/m/Y') }} — Total: {{ number_format($order->total, 2) }}€
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p>Sem compras registadas.</p>
-        @endif
-    </div>
+<div id="history-section" class="gold-border-box" style="display: none;">
+    <h4>Histórico de Compras</h4>
+    @if($orders && $orders->count())
+        <ul class="list-group">
+            @foreach($orders as $order)
+                @php
+                    $subtotal = $order->items->sum(fn($i) => $i->preco * $i->quantidade);
+                    $shipping = $subtotal < 75 ? 7.50 : 0;
+                    $total = $subtotal + $shipping;
+                @endphp
+                <li class="list-group-item">
+                    <strong>Compra #{{ $order->id }}</strong><br>
+                    <span><strong>Data:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</span><br>
+                    <span><strong>Estado:</strong> {{ ucfirst($order->estado) }}</span><br>
+                    <span><strong>Método:</strong> {{ ucfirst($order->metodo) }}</span><br>
+                    <span><strong>Endereço:</strong> {{ $order->endereco }}</span><br>
+                    <div style="margin-top:10px;">
+                        <strong>Itens:</strong>
+                        @foreach($order->items as $item)
+                            <div style="display:flex;align-items:center;margin-top:5px;">
+                                <img src="{{ asset($item->produto->imagem) }}" style="width:50px;height:50px;object-fit:cover;margin-right:10px;">
+                                {{ $item->produto->nome }} ({{ $item->quantidade }}) —
+                                {{ number_format($item->preco * $item->quantidade, 2) }} €
+                            </div>
+                        @endforeach
+                    </div>
+                    <div style="margin-top:5px;">
+                        @if($shipping > 0)
+                            <em>Portes de envio: {{ number_format($shipping, 2) }} € (aplicados por compra inferior a 75 €)</em><br>
+                        @endif
+                        <strong>Total: {{ number_format($total, 2) }} €</strong>
+                    </div>
+                </li>
+            @endforeach
+        </ul>
+    @else
+        <p>Sem compras registadas.</p>
+    @endif
+</div>
 
     <!-- Produtos (Admin Only) -->
     @if($user->usertype == 0)
@@ -282,8 +329,8 @@
         </div>
 
         
-        <div id="new-product-form" style="margin-top: 20px;">
-            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+        <div style="margin-top: 20px;">
+            <form  id="new-product-form" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <label class="form-label">Nome</label>
@@ -314,14 +361,14 @@
 </div>
 
 @if(isset($products) && count($products))
-    <ul class="list-group mt-4">
+    <ul id="product-list" class="list-group mt-4">
         @foreach($products as $product)
             <li class="list-group-item" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px;">
                 
                 {{-- Imagem --}}
                 <div style="flex: 0 0 120px;">
                     @if($product->imagem)
-                        <img src="{{ asset('storage/' . $product->imagem) }}"
+                        <img src="{{ asset($product->imagem) }}"
                              alt="{{ $product->nome }}"
                              style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
                     @else
