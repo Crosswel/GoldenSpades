@@ -46,7 +46,15 @@
         <img src="{{ asset('images/logo.png') }}" style="height:50px; margin-bottom:30px;">
     </a>
 
-    
+    <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
+        <a href="{{ route('profile.edit') }}" class="btn btn-primary">Editar Perfil</a>
+        <a href="#" onclick="document.getElementById('history-section').scrollIntoView({behavior: 'smooth'})" class="btn btn-primary">Histórico</a>
+        <a href="#product-section" class="btn btn-primary">Produto</a>
+        @if($user->usertype == 0)
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">Pedidos</a>
+        @endif
+    </div>
+
 
     <!-- FORM EDIT -->
     <div class="gold-border-box">

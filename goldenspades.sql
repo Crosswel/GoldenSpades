@@ -7,6 +7,13 @@
 -- Versão do servidor: 10.4.32-MariaDB
 -- versão do PHP: 8.2.12
 
+
+CREATE DATABASE IF NOT EXISTS `goldenspades`
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE `goldenspades`;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -27,7 +34,7 @@ SET time_zone = "+00:00";
 -- Estrutura da tabela `cache`
 --
 
-CREATE TABLE `cache` (
+CREATE TABLE IF NOT EXISTS `cache` (
   `key` varchar(255) NOT NULL,
   `value` mediumtext NOT NULL,
   `expiration` int(11) NOT NULL
@@ -51,7 +58,7 @@ INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
 -- Estrutura da tabela `cache_locks`
 --
 
-CREATE TABLE `cache_locks` (
+CREATE TABLE IF NOT EXISTS `cache_locks` (
   `key` varchar(255) NOT NULL,
   `owner` varchar(255) NOT NULL,
   `expiration` int(11) NOT NULL
@@ -63,7 +70,7 @@ CREATE TABLE `cache_locks` (
 -- Estrutura da tabela `failed_jobs`
 --
 
-CREATE TABLE `failed_jobs` (
+CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `uuid` varchar(255) NOT NULL,
   `connection` text NOT NULL,
@@ -79,7 +86,7 @@ CREATE TABLE `failed_jobs` (
 -- Estrutura da tabela `favorites`
 --
 
-CREATE TABLE `favorites` (
+CREATE TABLE IF NOT EXISTS `favorites` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `produto_id` bigint(20) UNSIGNED NOT NULL,
@@ -93,7 +100,7 @@ CREATE TABLE `favorites` (
 -- Estrutura da tabela `jobs`
 --
 
-CREATE TABLE `jobs` (
+CREATE TABLE IF NOT EXISTS `jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `queue` varchar(255) NOT NULL,
   `payload` longtext NOT NULL,
@@ -109,7 +116,7 @@ CREATE TABLE `jobs` (
 -- Estrutura da tabela `job_batches`
 --
 
-CREATE TABLE `job_batches` (
+CREATE TABLE IF NOT EXISTS `job_batches` (
   `id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `total_jobs` int(11) NOT NULL,
@@ -128,7 +135,7 @@ CREATE TABLE `job_batches` (
 -- Estrutura da tabela `migrations`
 --
 
-CREATE TABLE `migrations` (
+CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
@@ -155,7 +162,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- Estrutura da tabela `orders`
 --
 
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `total` decimal(8,2) NOT NULL DEFAULT 0.00,
@@ -169,7 +176,7 @@ CREATE TABLE `orders` (
 -- Estrutura da tabela `password_reset_tokens`
 --
 
-CREATE TABLE `password_reset_tokens` (
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
   `email` varchar(255) NOT NULL,
   `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
@@ -181,7 +188,7 @@ CREATE TABLE `password_reset_tokens` (
 -- Estrutura da tabela `personal_access_tokens`
 --
 
-CREATE TABLE `personal_access_tokens` (
+CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `tokenable_type` varchar(255) NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
@@ -200,7 +207,7 @@ CREATE TABLE `personal_access_tokens` (
 -- Estrutura da tabela `produtos`
 --
 
-CREATE TABLE `produtos` (
+CREATE TABLE IF NOT EXISTS `produtos` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `nome` varchar(255) NOT NULL,
   `imagem` varchar(255) NOT NULL,
@@ -217,7 +224,7 @@ CREATE TABLE `produtos` (
 -- Estrutura da tabela `profiles`
 --
 
-CREATE TABLE `profiles` (
+CREATE TABLE IF NOT EXISTS `profiles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -240,7 +247,7 @@ INSERT INTO `profiles` (`id`, `user_id`, `address`, `phone`, `created_at`, `upda
 -- Estrutura da tabela `sessions`
 --
 
-CREATE TABLE `sessions` (
+CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(255) NOT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
@@ -263,7 +270,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 -- Estrutura da tabela `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
