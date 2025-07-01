@@ -103,4 +103,5 @@ Route::get('/checkout/pagamento', [CarrinhoController::class, 'pagamento'])->nam
 
 Route::post('/checkout/finalizar', [CarrinhoController::class, 'finalizar'])->name('checkout.finalizar');
 Route::patch('/admin/orders/{order}', [\App\Http\Controllers\AdminOrderController::class, 'update'])->name('admin.orders.update');
-Route::get('/admin/orders', [\App\Http\Controllers\AdminOrderController::class, 'index'])->name('admin.orders.index');
+
+

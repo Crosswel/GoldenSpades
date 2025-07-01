@@ -46,6 +46,8 @@
         <img src="{{ asset('images/logo.png') }}" style="height:50px; margin-bottom:30px;">
     </a>
 
+    
+
     <!-- FORM EDIT -->
     <div class="gold-border-box">
         <h3>Editar Perfil</h3>
