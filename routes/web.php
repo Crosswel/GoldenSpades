@@ -56,15 +56,17 @@ Route::middleware([
     Route::post('/products', [ProdutoController::class, 'store'])->name('products.store');
 
     // Gestão de produtos
-    Route::middleware('can:isAdmin')->group(function () {
+  Route::middleware(['auth', 'can:isAdmin'])->group(function () {
         Route::get('/admin/products', [ProductManagementController::class, 'index'])->name('products.index');
-        Route::get('/admin/products/create', [ProductManagementController::class, 'create'])->name('products.create');
-        Route::post('/admin/products', [ProductManagementController::class, 'store'])->name('products.store.alt');
         Route::get('/admin/products/{product}/edit', [ProductManagementController::class, 'edit'])->name('products.edit');
         Route::put('/admin/products/{product}', [ProductManagementController::class, 'update'])->name('products.update');
         Route::delete('/admin/products/{product}', [ProductManagementController::class, 'destroy'])->name('products.destroy');
     });
+
 });
+
+
+
 
 // Área de administração
 Route::get('/admin', function () {
@@ -104,4 +106,7 @@ Route::get('/checkout/pagamento', [CarrinhoController::class, 'pagamento'])->nam
 Route::post('/checkout/finalizar', [CarrinhoController::class, 'finalizar'])->name('checkout.finalizar');
 Route::patch('/admin/orders/{order}', [\App\Http\Controllers\AdminOrderController::class, 'update'])->name('admin.orders.update');
 
+Route::get('/faqs', function () {
+    return view('faqs');
+})->name('faqs');
 

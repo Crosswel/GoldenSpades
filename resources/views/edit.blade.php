@@ -171,6 +171,20 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h4>Gestão de Produtos</h4>
             <button onclick="toggleNewProductForm()" class="btn-primary">+ Novo Produto</button>
+            @if(isset($categories) && count($categories))
+    <form method="GET" action="{{ route('profile') }}" style="margin-top:15px; display:flex; align-items:center; gap:10px;">
+        <label style="margin:0;">
+            <img src="{{ asset('images/Filtro.PNG') }}" alt="Filtro" style="width:30px; height:30px; vertical-align:middle;">
+        </label>
+        <select name="categories[]" multiple class="form-control" style="max-width:200px;">
+            @foreach($categories as $categoria)
+                <option value="{{ $categoria }}">{{ $categoria }}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+@endif
+
         </div>
 
         <!-- FORM NOVO PRODUTO -->
@@ -196,6 +210,34 @@
 
 
         
+
+                    <!-- BOTÃO DE FILTRO COM IMAGEM -->
+            <div style="margin-bottom:15px;">
+                <button onclick="toggleFilter()" style="background:none; border:none; cursor:pointer;">
+                    <img src="{{ asset('images/Filtro.PNG') }}" alt="Filtrar" style="width:30px;">
+                </button>
+            </div>
+
+            <!-- SELECT MULTIPLE PARA FILTRO -->
+            <div id="filter-box" style="display:none; margin-bottom:15px;">
+                <form method="GET" action="{{ route('products.index') }}">
+                    <label for="categories">Filtrar por Categoria:</label>
+                    <select name="categories[]" id="categories" multiple class="form-control" style="margin-top:5px;">
+                        @foreach($categories as $categoria)
+                            <option value="{{ $categoria }}">{{ $categoria }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-primary" style="margin-top:10px;">Filtrar</button>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
         <!-- LISTA DE PRODUTOS -->
         @if($products && count($products))
             <ul class="list-group mt-4">
@@ -231,6 +273,11 @@
             const form = document.getElementById('new-product-form');
             form.style.display = form.style.display === 'none' ? 'block' : 'none';
         }
+
+            function toggleFilter() {
+        const box = document.getElementById('filter-box');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
     </script>
 @endif
 

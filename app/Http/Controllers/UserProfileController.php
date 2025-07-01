@@ -12,34 +12,39 @@ class UserProfileController extends Controller
     /**
      * Mostrar o formulário de edição do perfil.
      */
-    public function edit()
+    public function edit(Request $request)
     {
         $user = Auth::user();
 
         if ($user->usertype == 0) {
-            // ADMIN
-            $orders = Order::with(['items.produto', 'user'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $query = Produto::query();
+            if ($request->has('categories')) {
+                $categories = explode(',', $request->categories);
+                $query->whereIn('categoria', $categories);
+            }
+            $products = $query->get();
+            $categories = Produto::select('categoria')->distinct()->pluck('categoria');
 
-            $products = Produto::all();
+            $orders = Order::with(['items.produto', 'user'])->latest()->get();
 
-        } else {
-            // USER normal
-            $orders = Order::with(['items.produto'])
-                ->where('user_id', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            if ($request->ajax()) {
+                return view('partials.product_list', compact('products'))->render();
+            }
 
-            $products = [];
+            return view('profile.edit', compact('user','products','orders','categories'));
         }
 
+        // normal user
+        $orders = Order::with(['items.produto'])->where('user_id', $user->id)->latest()->get();
         return view('profile.edit', [
             'user' => $user,
+            'products' => [],
             'orders' => $orders,
-            'products' => $products,
+            'categories' => collect()
         ]);
     }
+
+
 
     /**
      * Atualizar os dados do perfil do usuário.
@@ -66,4 +71,44 @@ class UserProfileController extends Controller
         $historico = session('historico', []);
         return view('profile.historico', compact('historico'));
     }
+
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+
+        // apenas admins podem ver
+        if ($user->usertype != 0) {
+            abort(403);
+        }
+
+        $query = Produto::query();
+
+        if ($request->has('categories')) {
+            $query->whereIn('categoria', $request->categories);
+        }
+
+        $products = $query->get();
+
+        $categories = Produto::select('categoria')->distinct()->pluck('categoria');
+
+        $orders = Order::with(['items.produto', 'user'])->latest()->get();
+
+        // se for ajax, devolver apenas o HTML do product-list
+        if ($request->ajax()) {
+            $query = Produto::query();
+
+            if ($request->has('categories')) {
+                $query->whereIn('categoria', $request->categories);
+            }
+
+            $products = $query->get();
+
+            // renderiza apenas o partial
+            return view('partials.product_list', compact('products'))->render();
+        }
+
+    }
+
+
+
 }

@@ -23,9 +23,7 @@
             <li><a href="{{ route('categoria', ['categoria' => 'anéis']) }}">Anéis</a></li>
             <li><a href="{{ route('categoria', ['categoria' => 'medalhas']) }}">Medalhas</a></li>
             <li><a href="{{ route('novacolecao') }}">Nova coleção</a></li>
-            <li class="highlight"><a href="#">Promoções</a></li>
-            <li><a href="#">Contactos</a></li>
-            <li><a href="#">Faq’s</a></li>
+            <li><a href="{{ route('faqs') }}">Faq’s</a></li>
         </ul>
         <div class="language">🌐 Português</div>
     </div>
