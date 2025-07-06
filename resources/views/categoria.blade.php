@@ -16,16 +16,13 @@
     <div class="side-menu" id="sideMenu">
         <span class="close-btn" onclick="closeMenu()">×</span>
         <h3>MENU</h3>
-        <input type="text" class="search-bar" placeholder="🔍 Pesquisar">
         <ul>
             <li><a href="{{ route('categoria', ['categoria' => 'relógios']) }}">Relógios</a></li>
             <li><a href="{{ route('categoria', ['categoria' => 'pulseiras']) }}">Pulseiras</a></li>
             <li><a href="{{ route('categoria', ['categoria' => 'anéis']) }}">Anéis</a></li>
             <li><a href="{{ route('categoria', ['categoria' => 'medalhas']) }}">Medalhas</a></li>
             <li><a href="{{ route('novacolecao') }}">Nova coleção</a></li>
-            <li class="highlight"><a href="#">Promoções</a></li>
-            <li><a href="#">Contactos</a></li>
-            <li><a href="#">Faq’s</a></li>
+            <li><a href="{{ route('faqs') }}">Faq’s</a></li>
         </ul>
         <div class="language">🌐 Português</div>
     </div>
@@ -63,10 +60,6 @@
                         <img src="{{ asset('images/Profile.png') }}" alt="Perfil" style="height: 24px;">
                     </a>
                 @endguest
-
-                <a href="{{ route('favoritos') }}">
-                    <img src="{{ asset('images/Favorito.png') }}" alt="Favoritos" style="height: 24px;">
-                </a>
 
                 @php
                     $carrinho = session('carrinho', []);

@@ -16,7 +16,6 @@
     <div class="side-menu" id="sideMenu">
         <span class="close-btn" onclick="closeMenu()">×</span>
         <h3>MENU</h3>
-        <input type="text" class="search-bar" placeholder="🔍 Pesquisar">
         <ul>
             <li><a href="{{ route('categoria', ['categoria' => 'relógios']) }}">Relógios</a></li>
             <li><a href="{{ route('categoria', ['categoria' => 'pulseiras']) }}">Pulseiras</a></li>

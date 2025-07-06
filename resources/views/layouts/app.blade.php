@@ -44,15 +44,18 @@
             </a>
             <!-- Icons -->
             <div class="header-icons">
+
                 <!-- Pesquisa -->
                 <div class="search-container" id="searchBox">
                     <form id="searchForm" action="{{ route('search') }}" method="GET">
-                        <input type="text" name="q" placeholder="Procurar produto..." class="search-input" required>
+                        <input type="text" id="searchQuery" name="q" placeholder="Procurar produto..." class="search-input" required>
                         <button type="submit" class="search-icon" id="toggleSearch">
                             <img src="{{ asset('images/Pesquisa.png') }}" alt="Pesquisar" style="height: 20px;">
                         </button>
                     </form>
                 </div>
+
+
                 @guest
                     <button onclick="openLogin()">
                         <img src="{{ asset('images/Profile.png') }}" alt="Login" style="height: 24px;">
@@ -61,11 +64,7 @@
                     <a href="{{ route('profile') }}">
                         <img src="{{ asset('images/Profile.png') }}" alt="Perfil" style="height: 24px;">
                     </a>
-                @endguest
-                <a href="{{ route('favoritos') }}">
-                    <img src="{{ asset('images/Favorito.png') }}" alt="Favoritos" style="height: 24px;">
-                </a>
-                
+                @endguest      
                 @php
                     $carrinho = session('carrinho', []);
                     $totalItens = array_sum($carrinho);
@@ -264,21 +263,35 @@
 
 
         // toggle pesquisa
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('toggleSearch');
-            const searchBox = document.getElementById('searchBox');
-            toggleBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                searchBox.classList.toggle('active');
-                const input = searchBox.querySelector('.search-input');
-                if (searchBox.classList.contains('active')) {
-                    input.focus();
-                } else {
-                    input.value = '';
+        function pesquisa() {
+            const searchInput = document.getElementById('searchQuery');
+            const productList = document.getElementById('product-list');
+
+            if (!searchInput || !productList) return;
+
+            searchInput.addEventListener('keyup', function() {
+                const query = searchInput.value.trim();
+
+                if (query.length >= 2) {
+                    fetch(`{{ route('search') }}?query=${encodeURIComponent(query)}`, {
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        productList.innerHTML = html;
+                    })
+                    .catch(error => console.error(error));
                 }
             });
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', pesquisa);
     </script>
+
+
+
+
+
 
 </body>
 </html>

@@ -116,7 +116,23 @@ class ProdutoController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('query');
-        $produtos = Produto::where('nome', 'like', '%' . $query . '%')->get();
+
+        $produtos = Produto::where('nome', 'like', '%' . $query . '%')
+                            ->orWhere('descricao', 'like', '%' . $query . '%')
+                            ->orWhere('categoria', 'like', '%' . $query . '%')
+                            ->get();
+
+        // resposta AJAX
+        if ($request->ajax()) {
+            return view('partials.products', compact('produtos'))->render();
+        }
+
+        // resposta normal
         return view('search_results', compact('produtos'));
     }
+
+
+    
+
+
 }
