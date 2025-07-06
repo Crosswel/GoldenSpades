@@ -12,7 +12,6 @@
     <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
     <div id="overlay" class="login-overlay" onclick="closeLogin(); closeRegister(); closeCart();"></div>
 
-
     <!-- Menu Lateral -->
     <div class="side-menu" id="sideMenu">
         <span class="close-btn" onclick="closeMenu()">×</span>
@@ -25,7 +24,6 @@
             <li><a href="{{ route('categoria', ['categoria' => 'medalhas']) }}">Medalhas</a></li>
             <li><a href="{{ route('novacolecao') }}">Nova coleção</a></li>
             <a href="{{ route('faqs') }}">FAQ</a>
-
         </ul>
         <div class="language">🌐 Português</div>
     </div>
@@ -46,15 +44,30 @@
             <div class="header-icons">
 
                 <!-- Pesquisa -->
-                <div class="search-container" id="searchBox">
-                    <form id="searchForm" action="{{ route('search') }}" method="GET">
-                        <input type="text" id="searchQuery" name="q" placeholder="Procurar produto..." class="search-input" required>
-                        <button type="submit" class="search-icon" id="toggleSearch">
+                <div class="search-container" id="searchBox" style="position: relative;">
+                    <form id="searchForm" action="{{ route('search') }}" method="GET" style="position:relative;">
+                        <input 
+                            type="text" 
+                            name="q"
+                            id="searchQuery"
+                            placeholder="Procurar produto..." 
+                            class="search-input"
+                            style="
+                                display: none;
+                                position: absolute;
+                                right: 35px;
+                                top: 0;
+                                border: 1px solid #ccc;
+                                border-radius: 4px;
+                                padding: 5px 10px;
+                                background: white;
+                            "
+                        >
+                        <button type="button" id="toggleSearch" style="background:none; border:none;">
                             <img src="{{ asset('images/Pesquisa.png') }}" alt="Pesquisar" style="height: 20px;">
                         </button>
                     </form>
                 </div>
-
 
                 @guest
                     <button onclick="openLogin()">
@@ -137,69 +150,58 @@
         </div>
     </div>
 
-    <!-- Carrinho (podes manter se quiseres ou adaptar) -->
-
-<div id="cartPanel" style="
-    position:fixed;
-    top:0;
-    right:-400px;
-    width:400px;
-    height:100%;
-    background:white;
-    box-shadow:-2px 0 5px rgba(0,0,0,0.2);
-    padding:20px;
-    transition:right 0.3s ease;
-    z-index:9999;
-    overflow-y:auto;
-    display:none;
-">
-    <button onclick="closeCart()" style="float:right; font-size:20px;">&times;</button>
-    <h2 style="margin-top:30px;">Carrinho</h2>
-    <hr>
-    @php
-        $carrinho = session('carrinho', []);
-        $totalItens = array_sum($carrinho);
-        $subtotal = 0;
-    @endphp
-    @if($totalItens > 0)
-        @foreach($carrinho as $id => $qtd)
-            @php
-                $produto = \App\Models\Produto::find($id);
-                $subtotal += $produto->preco * $qtd;
-            @endphp
-            @if($produto)
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;">
-                    <img src="{{ asset($produto->imagem) }}" style="width:60px;">
-                    <div style="flex:1;">
-                        <div>{{ $produto->nome }}</div>
-                        <div>{{ number_format($produto->preco, 2) }} €</div>
-                        <div style="margin-top:5px;">
-                            <button onclick="updateCart({{ $produto->id }}, 'decrement')" {{ $qtd == 1 ? 'disabled' : '' }}>−</button>
-                            <span>{{ $qtd }}</span>
-                        </div>
-                    </div>
-                    <button onclick="removeCart({{ $produto->id }})" style="border:none;background:none;">
-                        <img src="{{ asset('images/Lixo.PNG') }}" style="width:20px;">
-                    </button>
-                </div>
-            @endif
-        @endforeach
+    <!-- Carrinho -->
+    <div id="cartPanel" style="
+        position:fixed;
+        top:0;
+        right:-400px;
+        width:400px;
+        height:100%;
+        background:white;
+        box-shadow:-2px 0 5px rgba(0,0,0,0.2);
+        padding:20px;
+        transition:right 0.3s ease;
+        z-index:9999;
+        overflow-y:auto;
+        display:none;">
+        <button onclick="closeCart()" style="float:right; font-size:20px;">×</button>
+        <h2 style="margin-top:30px;">Carrinho</h2>
         <hr>
-        <div style="font-weight:bold;">Subtotal: {{ number_format($subtotal, 2) }} €</div>
-        <a href="{{ route('checkout') }}"
-            style="display:block; background:#d4af37; color:white; padding:10px; text-align:center;
-                   margin-top:20px; border-radius:4px;">
-            Finalizar Compra
-        </a>
-    @else
-        <p>O carrinho está vazio.</p>
-    @endif
-</div>
+        @if($totalItens > 0)
+            @foreach($carrinho as $id => $qtd)
+                @php
+                    $produto = \App\Models\Produto::find($id);
+                @endphp
+                @if($produto)
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;">
+                        <img src="{{ asset($produto->imagem) }}" style="width:60px;">
+                        <div style="flex:1;">
+                            <div>{{ $produto->nome }}</div>
+                            <div>{{ number_format($produto->preco, 2) }} €</div>
+                            <div style="margin-top:5px;">
+                                <button onclick="updateCart({{ $produto->id }}, 'decrement')" {{ $qtd == 1 ? 'disabled' : '' }}>−</button>
+                                <span>{{ $qtd }}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeCart({{ $produto->id }})" style="border:none;background:none;">
+                            <img src="{{ asset('images/Lixo.PNG') }}" style="width:20px;">
+                        </button>
+                    </div>
+                @endif
+            @endforeach
+            <hr>
+            <div style="font-weight:bold;">Subtotal: {{ number_format($subtotal, 2) }} €</div>
+            <a href="{{ route('checkout') }}"
+                style="display:block; background:#d4af37; color:white; padding:10px; text-align:center;
+                       margin-top:20px; border-radius:4px;">
+                Finalizar Compra
+            </a>
+        @else
+            <p>O carrinho está vazio.</p>
+        @endif
+    </div>
 
-
-
-
-    <!-- Scripts -->
+    <!-- SCRIPTS -->
     <script>
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('open');
@@ -225,73 +227,56 @@
             document.getElementById('registerPanel').classList.remove('show');
             document.getElementById('overlay').classList.remove('visible');
         }
-
-
         function openCart() {
-    const cart = document.getElementById("cartPanel");
-    const overlay = document.getElementById("overlay");
-    cart.style.display = "block"; 
-    setTimeout(() => { cart.style.right = "0"; }, 10);
-    overlay.classList.add('visible');
+            const cart = document.getElementById("cartPanel");
+            const overlay = document.getElementById("overlay");
+            cart.style.display = "block";
+            setTimeout(() => { cart.style.right = "0"; }, 10);
+            overlay.classList.add('visible');
         }
         function closeCart() {
-    const cart = document.getElementById("cartPanel");
-    const overlay = document.getElementById("overlay");
-    cart.style.right = "-400px";
-    setTimeout(() => { cart.style.display = "none"; }, 300);
-    overlay.classList.remove('visible');
+            const cart = document.getElementById("cartPanel");
+            const overlay = document.getElementById("overlay");
+            cart.style.right = "-400px";
+            setTimeout(() => { cart.style.display = "none"; }, 300);
+            overlay.classList.remove('visible');
+        }
+        function updateCart(id, action) {
+            fetch("{{ route('cart.update') }}", {
+                method: 'POST',
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}','Content-Type': 'application/json'},
+                body: JSON.stringify({id, action})
+            }).then(() => location.reload());
+        }
+        function removeCart(id) {
+            fetch(`/cart/remove/${id}`, {method: 'GET'}).then(() => location.reload());
         }
 
-        // AJAX
-        function updateCart(id, action) {
-    fetch("{{ route('cart.update') }}", {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({id, action})
-    }).then(() => location.reload());
-}
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleSearch = document.getElementById('toggleSearch');
+            const searchQuery = document.getElementById('searchQuery');
+            const searchForm = document.getElementById('searchForm');
 
-        function removeCart(id) {
-    fetch(`/cart/remove/${id}`, {
-        method: 'GET'
-    }).then(() => location.reload());
-}
-
-
-
-        // toggle pesquisa
-        function pesquisa() {
-            const searchInput = document.getElementById('searchQuery');
-            const productList = document.getElementById('product-list');
-
-            if (!searchInput || !productList) return;
-
-            searchInput.addEventListener('keyup', function() {
-                const query = searchInput.value.trim();
-
-                if (query.length >= 2) {
-                    fetch(`{{ route('search') }}?query=${encodeURIComponent(query)}`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        productList.innerHTML = html;
-                    })
-                    .catch(error => console.error(error));
+            toggleSearch.addEventListener('click', function() {
+                if (searchQuery.style.display === 'block') {
+                    if (searchQuery.value.trim() !== '') {
+                        searchForm.submit();
+                    } else {
+                        searchQuery.style.display = 'none';
+                    }
+                } else {
+                    searchQuery.style.display = 'block';
+                    searchQuery.focus();
                 }
             });
-        }
 
-        document.addEventListener('DOMContentLoaded', pesquisa);
+            document.addEventListener('click', function(e) {
+                if (!document.getElementById('searchBox').contains(e.target)) {
+                    searchQuery.style.display = 'none';
+                }
+            });
+        });
     </script>
-
-
-
-
-
 
 </body>
 </html>

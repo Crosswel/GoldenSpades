@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Produto;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ProdutoController extends Controller
 {
-
-
     // Listar admin
     public function index()
     {
@@ -26,7 +23,7 @@ class ProdutoController extends Controller
     // Guardar novo
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -35,10 +32,8 @@ class ProdutoController extends Controller
             'imagem' => 'nullable|image|max:2048',
         ]);
 
-        $imagemPath = null;
-
         if ($request->hasFile('imagem')) {
-            $categoriaFolder = strtolower($request->categoria);
+            $categoriaFolder = strtolower($validated['categoria']);
             $destinationPath = public_path("images/{$categoriaFolder}");
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
@@ -46,17 +41,10 @@ class ProdutoController extends Controller
 
             $nomeImagem = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $request->file('imagem')->getClientOriginalName());
             $request->file('imagem')->move($destinationPath, $nomeImagem);
-            $imagemPath = "images/{$categoriaFolder}/{$nomeImagem}";
+            $validated['imagem'] = "images/{$categoriaFolder}/{$nomeImagem}";
         }
 
-        Produto::create([
-            'nome' => $request->nome,
-            'categoria' => $request->categoria,
-            'descricao' => $request->descricao,
-            'preco' => $request->preco,
-            'quantidade' => $request->quantidade,
-            'imagem' => $imagemPath,
-        ]);
+        Produto::create($validated);
 
         return redirect()->route('profile.edit')->with('success', 'Produto criado com sucesso!');
     }
@@ -70,7 +58,7 @@ class ProdutoController extends Controller
     // Atualizar
     public function update(Request $request, Produto $product)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -79,21 +67,19 @@ class ProdutoController extends Controller
             'imagem' => 'nullable|image|max:2048',
         ]);
 
-        $data = $request->only(['nome', 'categoria', 'descricao', 'preco', 'quantidade']);
-
         if ($request->hasFile('imagem')) {
-            $categoriaFolder = strtolower($request->categoria);
+            $categoriaFolder = strtolower($validated['categoria']);
             $destinationPath = public_path("images/{$categoriaFolder}");
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
+
             $nomeImagem = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $request->file('imagem')->getClientOriginalName());
             $request->file('imagem')->move($destinationPath, $nomeImagem);
-            $imagemPath = "images/{$categoriaFolder}/{$nomeImagem}";
-            $data['imagem'] = $imagemPath;
+            $validated['imagem'] = "images/{$categoriaFolder}/{$nomeImagem}";
         }
 
-        $product->update($data);
+        $product->update($validated);
 
         return redirect()->route('profile.edit')->with('success', 'Produto atualizado com sucesso!');
     }
@@ -105,34 +91,33 @@ class ProdutoController extends Controller
         return redirect()->route('profile.edit')->with('success', 'Produto eliminado com sucesso!');
     }
 
-    // Página do produto
+    // Página de produto
     public function show($id)
     {
         $produto = Produto::findOrFail($id);
         return view('produto', compact('produto'));
     }
 
-    // Pesquisa (continua igual)
+    // Pesquisa (usada globalmente)
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        $query = $request->input('q');
 
-        $produtos = Produto::where('nome', 'like', '%' . $query . '%')
-                            ->orWhere('descricao', 'like', '%' . $query . '%')
-                            ->orWhere('categoria', 'like', '%' . $query . '%')
-                            ->get();
+        if (!$query) {
+            return redirect()->back()->with('error', 'Introduza um termo de pesquisa.');
+        }
 
-        // resposta AJAX
+        $produtos = Produto::where('nome', 'like', "%{$query}%")
+            ->orWhere('descricao', 'like', "%{$query}%")
+            ->orWhere('categoria', 'like', "%{$query}%")
+            ->get();
+
+        // resposta AJAX se vier do live search
         if ($request->ajax()) {
             return view('partials.products', compact('produtos'))->render();
         }
 
-        // resposta normal
+        // resposta tradicional
         return view('search_results', compact('produtos'));
     }
-
-
-    
-
-
 }
