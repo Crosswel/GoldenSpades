@@ -14,21 +14,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/';
 
-
-    /**
-     * Define o redirecionamento pós-login baseado no tipo de utilizador.
-     */
-    protected function redirectTo()
-    {
-        $user = auth()->user();
-
-        if ($user->usertype == 0) {
-            return '/admin';
-        }
-
-        return self::HOME;
-    }
-
     /**
      * Define as rotas da aplicação.
      */

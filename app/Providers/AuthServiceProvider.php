@@ -9,24 +9,17 @@ use App\Policies\ProdutoPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * O mapeamento das policies para a aplicação.
-     *
-     * @var array
-     */
     protected $policies = [
         Produto::class => ProdutoPolicy::class,
     ];
 
-    /**
-     * Regista quaisquer serviços de autenticação / autorização.
-     *
-     * @return void
-     */
     public function boot()
     {
         $this->registerPolicies();
 
-        Gate::define('isAdmin', fn($user) => $user->usertype === 0);
+        Gate::define('isAdmin', function($user) {
+            \Log::info('GATE isAdmin usertype=' . $user->usertype);  // debug
+            return $user->usertype == "0";
+        });
     }
 }

@@ -38,7 +38,6 @@ class ProdutoController extends Controller
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
-
             $nomeImagem = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $request->file('imagem')->getClientOriginalName());
             $request->file('imagem')->move($destinationPath, $nomeImagem);
             $validated['imagem'] = "images/{$categoriaFolder}/{$nomeImagem}";
@@ -46,7 +45,7 @@ class ProdutoController extends Controller
 
         Produto::create($validated);
 
-        return redirect()->route('profile.edit')->with('success', 'Produto criado com sucesso!');
+        return redirect()->route('profile')->with('success', 'Produto criado com sucesso!');
     }
 
     // Editar
@@ -73,7 +72,6 @@ class ProdutoController extends Controller
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
-
             $nomeImagem = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $request->file('imagem')->getClientOriginalName());
             $request->file('imagem')->move($destinationPath, $nomeImagem);
             $validated['imagem'] = "images/{$categoriaFolder}/{$nomeImagem}";
@@ -81,7 +79,7 @@ class ProdutoController extends Controller
 
         $product->update($validated);
 
-        return redirect()->route('profile.edit')->with('success', 'Produto atualizado com sucesso!');
+        return redirect()->route('profile')->with('success', 'Produto atualizado com sucesso!');
     }
 
     // Eliminar
@@ -103,21 +101,10 @@ class ProdutoController extends Controller
     {
         $query = $request->input('q');
 
-        if (!$query) {
-            return redirect()->back()->with('error', 'Introduza um termo de pesquisa.');
-        }
+        $produtos = Produto::where('nome', 'like', "%{$query}%")->get();
 
-        $produtos = Produto::where('nome', 'like', "%{$query}%")
-            ->orWhere('descricao', 'like', "%{$query}%")
-            ->orWhere('categoria', 'like', "%{$query}%")
-            ->get();
-
-        // resposta AJAX se vier do live search
-        if ($request->ajax()) {
-            return view('partials.products', compact('produtos'))->render();
-        }
-
-        // resposta tradicional
-        return view('search_results', compact('produtos'));
+        return view('partials.products', compact('produtos'));
     }
+
+
 }

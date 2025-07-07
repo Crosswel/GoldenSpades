@@ -63,7 +63,7 @@ class UserProfileController extends Controller
         $user->phone = $request->phone;
         $user->save();
 
-        return redirect()->route('profile.edit')->with('success', 'Perfil atualizado com sucesso!');
+        return redirect()->route('profile')->with('success', 'Alterações guardadas!');
     }
 
     public function historico()

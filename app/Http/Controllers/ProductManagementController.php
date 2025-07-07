@@ -7,12 +7,6 @@ use Illuminate\Http\Request;
 
 class ProductManagementController extends Controller
 {
-    public function __construct()
-    {
-        // garantir que só admins entram neste controller
-        $this->middleware('can:isAdmin');
-    }
-
     /**
      * Lista todos os produtos
      */
@@ -45,7 +39,7 @@ class ProductManagementController extends Controller
         ]);
 
         if ($request->hasFile('imagem')) {
-            $folder = strtolower($request->categoria);
+            $folder = strtolower($validated['categoria']);
             $destination = public_path("images/{$folder}");
             if (!file_exists($destination)) {
                 mkdir($destination, 0777, true);
@@ -83,7 +77,7 @@ class ProductManagementController extends Controller
         ]);
 
         if ($request->hasFile('imagem')) {
-            $folder = strtolower($request->categoria);
+            $folder = strtolower($validated['categoria']);
             $destination = public_path("images/{$folder}");
             if (!file_exists($destination)) {
                 mkdir($destination, 0777, true);

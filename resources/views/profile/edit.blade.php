@@ -40,7 +40,7 @@
         gap: 10px;
         margin-bottom: 20px;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .tab-button {
@@ -244,13 +244,22 @@
         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-centered">
     </a>
 
-    <div class="tab-buttons">
-        <button id="btn-profile" class="tab-button" onclick="toggleTab('profile')">Editar Perfil</button>
-        <button id="btn-history" class="tab-button" onclick="toggleTab('history')">Histórico</button>
-        @if($user->usertype == 0)
-        <button id="btn-products" class="tab-button" onclick="toggleTab('products')">Produto</button>
-        @endif
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div style="display: flex; gap: 10px;">
+            <button id="btn-profile" class="tab-button" onclick="toggleTab('profile')">Editar Perfil</button>
+            <button id="btn-history" class="tab-button" onclick="toggleTab('history')">Histórico</button>
+            @if($user->usertype == 0)
+                <button id="btn-products" class="tab-button" onclick="toggleTab('products')">Produto</button>
+            @endif
+        </div>
+        <div style="margin-left: auto; margin-right: 0; padding-left: 30px;">
+            <a href="{{ route('home') }}" class="tab-button" style="text-decoration: none;">
+                Voltar ao menu principal
+            </a>
+        </div>
     </div>
+
+
 
     <!-- Editar Perfil -->
     <div id="profile-section" class="gold-border-box">
@@ -375,14 +384,6 @@
 </div>
 @endif
 
-
-
-
-
-
-
-
-
 <!-- Produtos (Admin Only) -->
 @if($user->usertype == 0)
 <div id="product-section" class="gold-border-box" style="display: none;">
@@ -450,7 +451,12 @@
             <input type="file" name="imagem" class="form-control" required>
 
             <label class="form-label">Categoria</label>
-            <input type="text" name="categoria" class="form-control" required>
+            <select name="categoria" class="form-control" required>
+                <option value="">-- Selecione a categoria --</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat }}">{{ ucfirst($cat) }}</option>
+                @endforeach
+            </select>
 
             <label class="form-label">Descrição</label>
             <textarea name="descricao" class="form-control" required></textarea>

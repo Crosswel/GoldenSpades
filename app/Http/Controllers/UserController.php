@@ -1,29 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Produto;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Mostra o painel do utilizador com favoritos, encomendas e perfil.
-     */
     public function dashboard()
     {
-        $user = Auth::user();
-
-        // Relações devem estar definidas no modelo User
-        $orders = $user->orders ?? collect();
-        $favorites = $user->favorites ?? collect();
-        $produtos = Produto::all();
-        return view('home', compact('user', 'orders', 'favorites', 'produtos'));
+        return redirect('/');  // não existe dashboard real → volta para home
     }
 
-    /**
-     * Atualiza os dados do perfil (morada, telemóvel, e email se desejado).
-     */
     public function updateProfile(Request $request)
     {
         $request->validate([
@@ -38,6 +26,6 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->save();
 
-        return redirect()->route('home')->with('success', 'Perfil atualizado com sucesso.');
+        return redirect('/')->with('success', 'Perfil atualizado com sucesso.');
     }
 }

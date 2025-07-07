@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $produtos = \App\Models\Produto::all();
+        $produtos = Produto::all();
 
         $produtosPorCategoria = $produtos->groupBy(function($produto) {
             return ucfirst($produto->categoria);
@@ -18,13 +18,14 @@ class HomeController extends Controller
         return view('home', compact('produtosPorCategoria'));
     }
 
-
     public function categoria($categoria)
     {
         $produtos = Produto::where('categoria', $categoria)->paginate(12);
-        return view('categoria', compact('produtos', 'categoria'));
+        return view('categoria', [
+            'produtos' => $produtos,
+            'categoria' => ucfirst($categoria)
+        ]);
     }
-
 
     public function novaColecao()
     {
@@ -34,11 +35,10 @@ class HomeController extends Controller
             ->whereYear('created_at', $now->year)
             ->get();
 
-            // agrupar por categoria
-        $produtosPorCategoria = $produtos->groupBy('categoria');
+        $produtosPorCategoria = $produtos->groupBy(function($produto) {
+            return ucfirst($produto->categoria);
+        });
 
         return view('novacolecao', compact('produtosPorCategoria'));
     }
-
-
 }
