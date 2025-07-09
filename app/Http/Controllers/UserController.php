@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function dashboard()
     {
-        return redirect('/');  // não existe dashboard real → volta para home
+        return redirect('/');
     }
 
     public function updateProfile(Request $request)
