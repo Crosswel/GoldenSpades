@@ -33,7 +33,7 @@
             Sim, tem 14 dias para devolver ou trocar qualquer artigo, desde que esteja em perfeito estado e na embalagem original.</p>
 
             <p><strong>9. Como posso entrar em contacto convosco?</strong><br>
-            Pode contactar-nos através do nosso e-mail <strong>[inserir email de apoio ao cliente]</strong>, do formulário de contacto no website, ou através das nossas redes sociais.</p>
+            Pode contactar-nos através do nosso e-mail <strong>admin@goldspades.com</strong>, do formulário de contacto no website, ou através das nossas redes sociais.</p>
 
             <p><strong>10. Oferecem garantia nos produtos?</strong><br>
             Sim, todos os nossos produtos têm garantia legal de 2 anos, conforme a legislação portuguesa.</p>

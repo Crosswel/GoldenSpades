@@ -42,13 +42,13 @@
   <header>
     <div class="top-bar">Portes grátis em Encomendas acima de 75€</div>
     <div class="header-content">
-      <div class="menu-button" onclick="toggleMenu()">
+      <div class="menu-button" onclick="toggleMenu()" style="margin-left: 05px;">
         <img src="{{ asset('images/Menu.png') }}" alt="Menu" style="height:24px;">
       </div>
       <a href="{{ route('home') }}">
         <img src="{{ asset('images/Logo.png') }}" alt="GoldSpades" class="logo">
       </a>
-      <div class="header-icons">
+      <div class="header-icons" style="margin-right: 05px;">
         <!-- Pesquisa -->
         <div class="search-container" id="searchBox" style="position: relative;">
           <input type="text" id="searchQuery" placeholder="Procurar produto..."
